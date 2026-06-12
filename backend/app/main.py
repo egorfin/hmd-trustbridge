@@ -1,7 +1,14 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI(title="TrustBridge API", version="0.1.0")
+from app.models import AssessmentInput, AssessmentResponse
+from app.scoring import compute_assessment
+
+app = FastAPI(
+    title="TrustBridge API",
+    version="0.1.0",
+    description="Digital Readiness Assessment backend for HMD TrustBridge.",
+)
 
 app.add_middleware(
     CORSMiddleware,
@@ -16,6 +23,6 @@ async def health():
     return {"status": "ok"}
 
 
-# TODO: register routers
-# from app.routers import assessment
-# app.include_router(assessment.router, prefix="/api")
+@app.post("/api/assessment", response_model=AssessmentResponse)
+async def create_assessment(body: AssessmentInput) -> AssessmentResponse:
+    return compute_assessment(body)

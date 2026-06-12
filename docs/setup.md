@@ -41,6 +41,8 @@ docker compose up --build
 - Backend API: http://localhost:8000
 - Swagger docs: http://localhost:8000/docs
 
+> `NEXT_PUBLIC_API_BASE_URL` must point to `http://localhost:8000` (the host-visible address) because API calls are made from the **browser**, not from the Next.js server process. The Docker service name `backend` is only reachable container-to-container and will not work in the browser.
+
 ## Local development (without Docker)
 
 **Backend:**
