@@ -1,0 +1,19 @@
+Child profile:
+- Age: {child_age}
+- Device experience: {device_experience}
+- Social media exposure: {social_media_exposure}
+- Parent concern areas: {concern_areas}
+- Household digital rules exist: {household_rules}
+- Peer pressure resilience: {peer_pressure}
+- Country: {country}
+- Language: {language}
+
+Readiness assessment result:
+- Score: {score}/100
+- Label: {score_label}
+- Score breakdown: {breakdown}
+
+Identified risk areas:
+{risks}
+
+Based on this profile and score, generate the personalized Digital Safety Strategy and HMD Fuse recommendation.

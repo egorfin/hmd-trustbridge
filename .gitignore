@@ -1,0 +1,11 @@
+.env
+.env.local
+node_modules/
+__pycache__/
+.venv/
+.next/
+dist/
+build/
+.DS_Store
+*.log
+n8n_data/
