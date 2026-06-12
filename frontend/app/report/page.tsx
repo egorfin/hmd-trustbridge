@@ -1,23 +1,20 @@
-// Report page — renders the AI-generated Digital Readiness Snapshot
-// Receives report data via sessionStorage or query params (TBD in implementation)
 "use client";
 
-import ReadinessScore from "@/components/ReadinessScore";
-import RiskProfile from "@/components/RiskProfile";
-import SafetyStrategy from "@/components/SafetyStrategy";
-import FuseRecommendation from "@/components/FuseRecommendation";
+import Link from "next/link";
 
 export default function ReportPage() {
-  // TODO: load report data from API response stored in sessionStorage
   return (
-    <main className="flex flex-col items-center min-h-screen px-4 py-8 gap-6">
-      <header className="text-center">
-        <h1 className="text-2xl font-bold text-hmd-blue">Your Digital Readiness Report</h1>
-      </header>
-      <ReadinessScore />
-      <RiskProfile />
-      <SafetyStrategy />
-      <FuseRecommendation />
+    <main className="min-h-screen flex flex-col items-center justify-center px-5 py-12 text-center">
+      <div className="max-w-sm mx-auto">
+        <span className="text-xs font-bold tracking-widest text-hmd-teal uppercase">HMD TrustBridge</span>
+        <h1 className="text-2xl font-bold text-gray-900 mt-4 mb-3">Your report is on the previous page</h1>
+        <p className="text-sm text-gray-500 mb-6">
+          Results are shown directly after completing the assessment. Use your browser&apos;s print function to save a copy.
+        </p>
+        <Link href="/" className="tb-btn-primary inline-block text-center">
+          Take the assessment
+        </Link>
+      </div>
     </main>
   );
 }

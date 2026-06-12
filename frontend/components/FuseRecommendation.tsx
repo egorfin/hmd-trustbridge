@@ -1,22 +1,30 @@
 "use client";
-// Shows the earned HMD Fuse recommendation with explanation
-// Only displayed when the assessment score and strategy support it
+
 interface FuseRecommendationProps {
-  recommended?: boolean;
-  reason?: string;
+  text: string;
 }
 
-export default function FuseRecommendation({ recommended, reason }: FuseRecommendationProps) {
-  if (recommended === undefined) {
-    return null;
-  }
+export default function FuseRecommendation({ text }: FuseRecommendationProps) {
+  if (!text) return null;
 
   return (
-    <div className="w-full max-w-md bg-hmd-blue text-white rounded-2xl shadow p-6 text-center">
-      <h2 className="text-lg font-semibold mb-2">
-        {recommended ? "HMD Fuse — A Good Fit" : "Not Yet the Right Moment"}
-      </h2>
-      <p className="text-sm opacity-90">{reason}</p>
+    <div className="rounded-2xl border border-hmd-teal/30 bg-gradient-to-br from-teal-50 to-blue-50 p-6">
+      <div className="flex items-start gap-3 mb-3">
+        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-hmd-teal/10 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4" stroke="#00A99D" strokeWidth="2">
+            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </div>
+        <div>
+          <p className="text-xs font-semibold text-hmd-teal uppercase tracking-widest">
+            Why HMD Fuse fits this strategy
+          </p>
+        </div>
+      </div>
+      <p className="text-sm text-gray-700 leading-relaxed">{text}</p>
+      <p className="text-xs text-gray-400 mt-3">
+        Recommendation based on your assessment answers.
+      </p>
     </div>
   );
 }

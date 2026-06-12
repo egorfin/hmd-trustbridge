@@ -7,6 +7,40 @@
   --hmd-teal: #00A99D;
 }
 
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 body {
-  @apply bg-hmd-light text-gray-800;
+  background: linear-gradient(150deg, #F8FAFC 0%, #FFFFFF 55%, #EFF6FF 100%);
+  min-height: 100vh;
+  @apply text-gray-800;
+}
+
+/* Card style reused across components */
+@layer components {
+  .tb-card {
+    @apply bg-white rounded-2xl border border-gray-100 shadow-sm p-6;
+  }
+
+  .tb-btn-primary {
+    @apply w-full py-4 bg-hmd-blue text-white rounded-2xl font-semibold text-base
+           shadow-sm active:opacity-90 transition-opacity;
+  }
+
+  .tb-btn-secondary {
+    @apply w-full py-3 text-gray-500 text-sm font-medium rounded-2xl
+           border border-gray-200 bg-white active:bg-gray-50 transition-colors;
+  }
+
+  .tb-option {
+    @apply w-full text-left px-4 py-3 rounded-xl border-2 border-gray-200 bg-white
+           text-gray-700 font-medium text-sm cursor-pointer transition-all
+           hover:border-hmd-blue hover:text-hmd-blue;
+  }
+
+  .tb-option-selected {
+    @apply border-hmd-blue bg-hmd-blue text-white hover:border-hmd-blue hover:text-white;
+  }
 }

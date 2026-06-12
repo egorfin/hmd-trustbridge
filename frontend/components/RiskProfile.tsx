@@ -1,36 +1,54 @@
 "use client";
-// Shows the top digital risk areas identified for this child profile
-interface Risk {
-  name: string;
-  level: "low" | "medium" | "high";
-  description: string;
-}
+
+import { RiskItem } from "@/lib/types";
 
 interface RiskProfileProps {
-  risks?: Risk[];
+  risks: RiskItem[];
 }
 
+const SEVERITY_CONFIG = {
+  high: {
+    label: "Needs attention",
+    classes: "bg-amber-50 text-amber-700 border-amber-200",
+    dot: "bg-amber-400",
+  },
+  medium: {
+    label: "Watch closely",
+    classes: "bg-blue-50 text-blue-700 border-blue-200",
+    dot: "bg-blue-400",
+  },
+  low: {
+    label: "Lower concern",
+    classes: "bg-green-50 text-green-700 border-green-200",
+    dot: "bg-green-400",
+  },
+};
+
 export default function RiskProfile({ risks }: RiskProfileProps) {
+  if (!risks || risks.length === 0) return null;
+
   return (
-    <div className="w-full max-w-md bg-white rounded-2xl shadow p-6">
-      <h2 className="text-lg font-semibold text-gray-800 mb-3">Key Digital Risks</h2>
-      {risks ? (
-        <ul className="space-y-2">
-          {risks.map((r) => (
-            <li key={r.name} className="flex items-start gap-2">
-              <span className="text-xs font-medium mt-0.5 px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
-                {r.level}
-              </span>
-              <div>
-                <p className="font-medium text-sm">{r.name}</p>
-                <p className="text-xs text-gray-500">{r.description}</p>
+    <div className="tb-card">
+      <h2 className="text-base font-semibold text-gray-800 mb-4">Key risk areas to keep in mind</h2>
+      <div className="space-y-3">
+        {risks.map((risk) => {
+          const config = SEVERITY_CONFIG[risk.severity] ?? SEVERITY_CONFIG.medium;
+          return (
+            <div key={risk.key} className="flex gap-3 items-start">
+              <div className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${config.dot}`} />
+              <div className="flex-1 min-w-0">
+                <div className="flex flex-wrap items-center gap-2 mb-1">
+                  <span className="font-medium text-sm text-gray-800">{risk.label}</span>
+                  <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${config.classes}`}>
+                    {config.label}
+                  </span>
+                </div>
+                <p className="text-xs text-gray-500 leading-relaxed">{risk.reason}</p>
               </div>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p className="text-gray-400 text-sm">Risk profile — pending</p>
-      )}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

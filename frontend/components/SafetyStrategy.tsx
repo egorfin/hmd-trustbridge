@@ -1,28 +1,25 @@
 "use client";
-// Displays the LLM-generated personalized Digital Safety Strategy
+
 interface SafetyStrategyProps {
-  strategy?: string;
-  tips?: string[];
+  items: string[];
 }
 
-export default function SafetyStrategy({ strategy, tips }: SafetyStrategyProps) {
+export default function SafetyStrategy({ items }: SafetyStrategyProps) {
+  if (!items || items.length === 0) return null;
+
   return (
-    <div className="w-full max-w-md bg-white rounded-2xl shadow p-6">
-      <h2 className="text-lg font-semibold text-gray-800 mb-3">Your Safety Strategy</h2>
-      {strategy ? (
-        <>
-          <p className="text-sm text-gray-700 mb-3">{strategy}</p>
-          {tips && (
-            <ul className="list-disc list-inside space-y-1">
-              {tips.map((t, i) => (
-                <li key={i} className="text-sm text-gray-600">{t}</li>
-              ))}
-            </ul>
-          )}
-        </>
-      ) : (
-        <p className="text-gray-400 text-sm">Safety strategy — pending</p>
-      )}
+    <div className="tb-card">
+      <h2 className="text-base font-semibold text-gray-800 mb-4">Your safer-start strategy</h2>
+      <ol className="space-y-3">
+        {items.map((item, i) => (
+          <li key={i} className="flex gap-3 items-start">
+            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-hmd-blue text-white text-xs font-bold flex items-center justify-center mt-0.5">
+              {i + 1}
+            </span>
+            <p className="text-sm text-gray-700 leading-relaxed">{item}</p>
+          </li>
+        ))}
+      </ol>
     </div>
   );
 }
