@@ -53,8 +53,10 @@ class RiskItem(BaseModel):
 
 class AssessmentResponse(BaseModel):
     session_id: str
+    assessment_id: str | None = None
     readiness_score: int = Field(..., ge=0, le=100)
     readiness_level: ReadinessLevel
+    readiness_display_label: str
     confidence_level: ConfidenceLevel
     risk_profile: list[RiskItem]
     recommended_parenting_approach: str

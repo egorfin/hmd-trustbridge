@@ -29,7 +29,21 @@ Edit `.env` and fill in:
 
 ### 3. Set up Supabase schema
 
-Run `supabase/schema.sql` in your Supabase SQL editor, then `supabase/seed.sql`.
+1. Create a free project at https://supabase.com
+2. Open **SQL Editor** in the Supabase dashboard
+3. Paste and run `supabase/schema.sql` — creates all five tables and indexes
+4. Paste and run `supabase/seed.sql` — inserts prompt versions and rules (safe to re-run)
+5. Copy **Project URL** → `SUPABASE_URL` in `.env`
+6. Copy **service_role** key (Settings → API) → `SUPABASE_SERVICE_ROLE_KEY` in `.env`
+
+> The backend works without Supabase — it skips logging and returns `debug.supabase: "not configured"` when `debug: true`.
+
+### Verify Supabase logs
+
+After sending one assessment request, check these tables in **Table Editor**:
+- `tb_sessions` — one row per request
+- `tb_assessments` — scoring inputs + outputs
+- `tb_agent_steps` — step trace (`incoming_assessment_request`, `deterministic_scoring`)
 
 ### 4. Start
 

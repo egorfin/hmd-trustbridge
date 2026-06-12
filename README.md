@@ -6,7 +6,11 @@
 
 TrustBridge helps parents answer one question: **Is my child ready for a smartphone?**
 
-The HMD Fuse recommendation is earned through the assessment — it's a consequence of the parent's answers, not the starting point.
+The HMD Fuse recommendation is earned through the assessment — a consequence of the parent's answers, not the starting point.
+
+> This demo runs locally but uses OpenAI API and Supabase over the internet.
+> No real API keys are included in the public repository.
+> For private hackathon submission, `.env.hackathon` may be included in the ZIP package only. Do not commit `.env.hackathon`.
 
 ---
 
@@ -14,7 +18,7 @@ The HMD Fuse recommendation is earned through the assessment — it's a conseque
 
 ```bash
 cp .env.example .env
-# Fill in OPENAI_API_KEY, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, SUPABASE_ANON_KEY
+# Fill in: OPENAI_API_KEY, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, SUPABASE_ANON_KEY
 
 docker compose up --build
 ```
@@ -22,6 +26,20 @@ docker compose up --build
 - Frontend: http://localhost:3000
 - Backend API: http://localhost:8000
 - API docs: http://localhost:8000/docs
+
+## Supabase Setup
+
+1. Create a free Supabase project at https://supabase.com
+2. Open **SQL Editor**
+3. Run `supabase/schema.sql`
+4. Run `supabase/seed.sql`
+5. Copy **Project URL** and **service_role key** into `.env`
+6. Start the backend — it will log sessions, assessments, and agent steps automatically
+
+Verify logs in the Supabase **Table Editor**:
+- `tb_sessions` — one row per assessment
+- `tb_assessments` — scoring inputs and outputs
+- `tb_agent_steps` — per-step trace (request received, scoring, LLM call)
 
 ## User Journey
 

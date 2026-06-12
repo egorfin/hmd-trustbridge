@@ -202,6 +202,12 @@ _FUSE_LEVEL = {
     "ready_with_boundaries": "recommended_with_flexible_boundaries",
 }
 
+_DISPLAY_LABEL = {
+    "not_ready": "Safer start recommended",
+    "moderate": "Ready for guided independence",
+    "ready_with_boundaries": "Ready with clear boundaries",
+}
+
 
 def _build_strategy_focus(data: AssessmentInput, level: str) -> list[str]:
     focus: list[str] = []
@@ -247,8 +253,7 @@ def _readiness_level(score: int) -> ReadinessLevel:
 
 
 # ── Public API ────────────────────────────────────────────────────────────────
-def compute_assessment(data: AssessmentInput) -> AssessmentResponse:
-    session_id = data.resolved_session_id()
+def compute_assessment(data: AssessmentInput, session_id: str) -> AssessmentResponse:
     drivers: list[ScoreDriver] = []
     score = _BASE_SCORE
 
@@ -301,6 +306,7 @@ def compute_assessment(data: AssessmentInput) -> AssessmentResponse:
         session_id=session_id,
         readiness_score=score,
         readiness_level=level,
+        readiness_display_label=_DISPLAY_LABEL[level],
         confidence_level=_confidence_level(data),
         risk_profile=_build_risk_profile(data),
         recommended_parenting_approach=_APPROACH[level],
