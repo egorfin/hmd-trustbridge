@@ -39,7 +39,9 @@ docker compose up --build
 Verify logs in the Supabase **Table Editor**:
 - `tb_sessions` — one row per assessment
 - `tb_assessments` — scoring inputs and outputs
-- `tb_agent_steps` — per-step trace (request received, scoring, LLM call)
+- `tb_agent_steps` — per-step trace: `incoming_assessment_request`, `deterministic_scoring`, `llm_report_generation`
+
+> The readiness score is deterministic — OpenAI only generates the explanation/report. LLM failures return a fallback report and never break the endpoint.
 
 ## User Journey
 

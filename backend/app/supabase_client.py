@@ -105,6 +105,27 @@ async def log_assessment(
         return None
 
 
+async def get_active_prompt(name: str) -> str | None:
+    """Fetch an active prompt text from tb_prompt_versions by name."""
+    if not is_supabase_configured():
+        return None
+    try:
+        async with httpx.AsyncClient(timeout=5.0) as client:
+            resp = await client.get(
+                _url("tb_prompt_versions"),
+                headers=_headers(),
+                params={"name": f"eq.{name}", "is_active": "eq.true", "select": "prompt", "limit": "1"},
+            )
+            resp.raise_for_status()
+            rows = resp.json()
+            if isinstance(rows, list) and rows:
+                return rows[0].get("prompt")
+        return None
+    except Exception as exc:
+        print(f"[TrustBridge] Supabase get_active_prompt({name!r}) failed: {type(exc).__name__}")
+        return None
+
+
 async def log_agent_step(
     session_id: str | None,
     assessment_id: str | None,

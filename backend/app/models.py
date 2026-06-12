@@ -51,6 +51,17 @@ class RiskItem(BaseModel):
     reason: str
 
 
+class DigitalReadinessReport(BaseModel):
+    headline: str
+    summary: str
+    why_this_score: str
+    risk_explanation: str
+    safety_strategy: list[str]
+    suggested_parent_child_conversation: str
+    why_hmd_fuse_fits: str
+    confidence_shift_message: str
+
+
 class AssessmentResponse(BaseModel):
     session_id: str
     assessment_id: str | None = None
@@ -63,4 +74,5 @@ class AssessmentResponse(BaseModel):
     strategy_focus: list[str]
     fuse_recommendation_level: str
     score_drivers: list[ScoreDriver]
+    report: DigitalReadinessReport | None = None
     debug: dict

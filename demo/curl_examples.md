@@ -1,10 +1,15 @@
 # curl Examples
 
+> The readiness score is deterministic. OpenAI only generates the explanation/report.
+> If OpenAI is not configured, a fallback report is returned and the endpoint still returns 200.
+
 ## Health check
 
 ```bash
 curl http://localhost:8000/health
 ```
+
+---
 
 ## Assessment — spec example (age 10, 3 concerns)
 
@@ -27,12 +32,32 @@ curl -X POST http://localhost:8000/api/assessment \
   }'
 ```
 
-If Supabase is not configured, the response includes `"debug": {"supabase": "not configured — logging skipped"}`.
+**Expected response includes:**
+```json
+{
+  "readiness_score": 37,
+  "readiness_level": "not_ready",
+  "readiness_display_label": "Safer start recommended",
+  "report": {
+    "headline": "...",
+    "summary": "...",
+    "why_this_score": "...",
+    "risk_explanation": "...",
+    "safety_strategy": ["..."],
+    "suggested_parent_child_conversation": "...",
+    "why_hmd_fuse_fits": "...",
+    "confidence_shift_message": "..."
+  },
+  "debug": {
+    "llm": { "fallback_used": false, "model": "gpt-4.1-mini", ... }
+  }
+}
+```
 
-If Supabase is configured and schema exists, rows appear in:
+If Supabase is configured, rows appear in:
 - `tb_sessions`
 - `tb_assessments`
-- `tb_agent_steps` (steps: `incoming_assessment_request`, `deterministic_scoring`)
+- `tb_agent_steps` (steps: `incoming_assessment_request`, `deterministic_scoring`, `llm_report_generation`)
 
 ---
 

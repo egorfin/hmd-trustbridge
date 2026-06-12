@@ -1,19 +1,23 @@
-Child profile:
-- Age: {child_age}
-- Device experience: {device_experience}
-- Social media exposure: {social_media_exposure}
-- Parent concern areas: {concern_areas}
-- Household digital rules exist: {household_rules}
-- Peer pressure resilience: {peer_pressure}
-- Country: {country}
-- Language: {language}
+Create a parent-facing Digital Readiness Report based on the following structured assessment.
 
-Readiness assessment result:
-- Score: {score}/100
-- Label: {score_label}
-- Score breakdown: {breakdown}
+Use warm, calm, practical language.
 
-Identified risk areas:
-{risks}
+Do not pressure the parent to buy.
+Do not use fear-based language.
+Do not encourage secret surveillance.
+Make the HMD Fuse recommendation feel earned and connected to the assessment.
 
-Based on this profile and score, generate the personalized Digital Safety Strategy and HMD Fuse recommendation.
+Return JSON with:
+{
+  "headline": "...",
+  "summary": "...",
+  "why_this_score": "...",
+  "risk_explanation": "...",
+  "safety_strategy": ["...", "..."],
+  "suggested_parent_child_conversation": "...",
+  "why_hmd_fuse_fits": "...",
+  "confidence_shift_message": "..."
+}
+
+Assessment:
+{{assessment_json}}
