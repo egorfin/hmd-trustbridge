@@ -213,7 +213,7 @@ function getAnswerLabel(key: StepKey, form: FormData, extra: ExtraAnswers): stri
 function getDynamicQuestion(key: StepKey, form: FormData): string {
   if (key === "confidence") {
     if (form.first_smartphone === false) {
-      return "How confident do you feel about improving your family's current phone habits?";
+      return "How confident do you feel about improving your child's current phone habits?";
     }
     return "How confident do you feel about setting up their first smartphone?";
   }
