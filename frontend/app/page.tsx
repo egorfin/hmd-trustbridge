@@ -3,11 +3,11 @@
 import { useState } from "react";
 import AssessmentForm from "@/components/AssessmentForm";
 import ReadinessScore from "@/components/ReadinessScore";
-import FuseRecommendation from "@/components/FuseRecommendation";
+import FuseSection from "@/components/FuseSection";
 import PhoneAgreement from "@/components/PhoneAgreement";
 import FirstWeekPlan from "@/components/FirstWeekPlan";
 import PhoneComparison from "@/components/PhoneComparison";
-import { AssessmentResponse, RiskItem, ScoreDriver } from "@/lib/types";
+import { AssessmentResponse, FormSummary, RiskItem, ScoreDriver } from "@/lib/types";
 
 type AppState = "landing" | "assessing" | "results";
 
@@ -98,9 +98,11 @@ function deriveHabits(risks: RiskItem[]): { title: string; description: string }
 export default function Home() {
   const [appState, setAppState] = useState<AppState>("landing");
   const [result, setResult] = useState<AssessmentResponse | null>(null);
+  const [formSummary, setFormSummary] = useState<FormSummary | null>(null);
 
-  function handleComplete(response: AssessmentResponse) {
+  function handleComplete(response: AssessmentResponse, summary: FormSummary) {
     setResult(response);
+    setFormSummary(summary);
     setAppState("results");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -339,10 +341,8 @@ export default function Home() {
           </div>
         )}
 
-        {/* 6 — Why HMD Fuse May Fit */}
-        {report?.why_hmd_fuse_fits && (
-          <FuseRecommendation text={report.why_hmd_fuse_fits} />
-        )}
+        {/* 6 — Why HMD Fuse May Fit Your Family */}
+        <FuseSection result={result} summary={formSummary} />
 
         {/* 7 — CTA */}
         <div className="pt-1 pb-2 space-y-3">

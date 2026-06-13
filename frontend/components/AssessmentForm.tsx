@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import ProgressBar from "./ProgressBar";
-import { AssessmentResponse, FormData } from "@/lib/types";
+import { AssessmentResponse, FormData, FormSummary } from "@/lib/types";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
 
@@ -211,10 +211,26 @@ function addConcern(form: FormData, concern: string): FormData {
   return { ...form, main_concerns: [...form.main_concerns, concern] };
 }
 
+// ── Form summary (passed to parent for personalized results) ─────────────────
+
+function buildFormSummary(f: FormData): FormSummary {
+  const ageGroup = AGE_GROUPS.find((g) => g.age === f.child_age);
+  const concernOption = CONCERN_OPTIONS.find((o) => o.value === f.main_concerns[0]);
+  const confidenceOption = CONFIDENCE_OPTIONS.find((o) => o.value === f.parent_confidence_before);
+  return {
+    ageLabel: ageGroup ? `${ageGroup.label} years` : "",
+    isFirstSmartphone: f.first_smartphone,
+    mainConcernKey: f.main_concerns[0] ?? "",
+    mainConcernLabel: concernOption?.label ?? "",
+    confidenceLabel: confidenceOption?.label ?? "",
+    mainUseLabels: f.main_use.map((v) => USE_OPTIONS.find((o) => o.value === v)?.label ?? v),
+  };
+}
+
 // ── Props ─────────────────────────────────────────────────────────────────────
 
 interface AssessmentFormProps {
-  onComplete: (response: AssessmentResponse) => void;
+  onComplete: (response: AssessmentResponse, summary: FormSummary) => void;
   onBack: () => void;
 }
 
@@ -278,7 +294,7 @@ export default function AssessmentForm({ onComplete, onBack }: AssessmentFormPro
       });
       if (!res.ok) throw new Error(`Server error ${res.status}`);
       const data: AssessmentResponse = await res.json();
-      onComplete(data);
+      onComplete(data, buildFormSummary(f));
     } catch {
       setError("Something went wrong. Please try again.");
       setLoading(false);

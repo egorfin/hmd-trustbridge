@@ -37,6 +37,15 @@ export type AssessmentResponse = {
   report: DigitalReadinessReport | null;
 };
 
+export type FormSummary = {
+  ageLabel: string;
+  isFirstSmartphone: boolean | null;
+  mainConcernKey: string;
+  mainConcernLabel: string;
+  confidenceLabel: string;
+  mainUseLabels: string[];
+};
+
 export type FormData = {
   child_age: number;
   first_smartphone: boolean | null;
