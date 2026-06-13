@@ -44,6 +44,7 @@ export type FormSummary = {
   mainConcernKey: string;
   mainConcernLabel: string;
   confidenceLabel: string;
+  mainUseKeys: string[];
   mainUseLabels: string[];
 };
 

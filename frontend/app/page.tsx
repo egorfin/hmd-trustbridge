@@ -12,6 +12,8 @@ import {
   SmartphoneComparisonContent,
   CHALLENGE_LABEL,
 } from "@/components/HmdPathSection";
+import EvidenceChip from "@/components/EvidenceChip";
+import { selectEvidenceSet } from "@/lib/evidenceSources";
 import { AssessmentResponse, FormSummary, RiskItem, ScoreDriver } from "@/lib/types";
 
 type AppState = "landing" | "assessing" | "results";
@@ -324,7 +326,6 @@ export default function Home() {
   const isFirstSmartphone = formSummary?.isFirstSmartphone;
   const isOlderTeen = childAge >= 16;
   const concernKey = formSummary?.mainConcernKey || result.risk_profile[0]?.key || "";
-  const selectedInsights = selectInsights(formSummary);
   const planHeader =
     isFirstSmartphone === false
       ? "Building Better Digital Habits"
@@ -338,6 +339,17 @@ export default function Home() {
   const productName = getProductName(result, formSummary);
   const whySentence = buildWhy(result, formSummary);
   const ctaUrl = getHmdPathCtaUrl(result, formSummary);
+  const pathKey = derivePathKey(result, formSummary);
+
+  // Evidence — computed once, used at four placement points
+  const evidenceSet = selectEvidenceSet({
+    concernKey,
+    childAge,
+    mainUseKeys: formSummary?.mainUseKeys ?? [],
+    readinessLevel: result.readiness_level,
+    pathKey,
+    isFirstSmartphone: formSummary?.isFirstSmartphone ?? null,
+  });
 
   return (
     <main className="min-h-screen pb-16 bg-white">
@@ -371,6 +383,11 @@ export default function Home() {
             </div>
           </div>
 
+          {/* Evidence for biggest challenge */}
+          {evidenceSet.challengeEvidence && (
+            <EvidenceChip item={evidenceSet.challengeEvidence} title="Why this matters" />
+          )}
+
           <div className="h-px bg-gray-100" />
 
           {/* Row 2: Recommended HMD Path */}
@@ -379,6 +396,19 @@ export default function Home() {
             <span className="inline-block bg-hmd-blue/10 border border-hmd-blue/20 text-hmd-blue text-xs font-bold px-3 py-1.5 rounded-full">
               {productName}
             </span>
+            <div className="mt-2">
+              <a
+                href={ctaUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[10px] text-gray-400 hover:text-hmd-teal inline-flex items-center gap-0.5 transition-colors"
+              >
+                Source: hmd.com
+                <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-2.5 h-2.5 ml-0.5">
+                  <path d="M1 11L11 1M11 1H4.5M11 1V7.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </a>
+            </div>
           </div>
 
           <div className="h-px bg-gray-100" />
@@ -462,7 +492,16 @@ export default function Home() {
           title="Why not a regular smartphone?"
           hint="See how the recommended HMD path differs from a standard smartphone for your challenge."
         >
-          <SmartphoneComparisonContent result={result} summary={formSummary} />
+          <div className="space-y-3 pt-2">
+            {evidenceSet.comparisonEvidence && (
+              <EvidenceChip item={evidenceSet.comparisonEvidence} />
+            )}
+            <SmartphoneComparisonContent
+              result={result}
+              summary={formSummary}
+              productEvidence={evidenceSet.productEvidence}
+            />
+          </div>
         </Accordion>
 
         {/* ── Accordion 3: Family action plan ──────────────────────────────── */}
@@ -527,13 +566,33 @@ export default function Home() {
         {/* ── Accordion 4: Research ─────────────────────────────────────────── */}
         <Accordion
           title="Research behind this recommendation"
-          hint="Sources that inform the TrustBridge approach."
+          hint="Sources used in your specific report — no unused research included."
         >
           <div className="space-y-3 pt-2">
-            {selectedInsights.map((insight, i) => (
-              <div key={i} className="rounded-xl border border-gray-100 p-4 bg-gray-50">
-                <p className="text-sm text-gray-700 leading-relaxed mb-2">{insight.stat}</p>
-                <p className="text-xs text-gray-400">Source: {insight.source}</p>
+            {evidenceSet.all.map((item) => (
+              <div key={item.id} className="rounded-xl border border-gray-100 p-4 bg-gray-50">
+                {item.sourceType !== "hmd" && (
+                  <span className="inline-block text-[10px] font-semibold text-gray-400 uppercase tracking-widest bg-gray-100 rounded-full px-2 py-0.5 mb-2">
+                    {item.sourceType === "public_health" ? "Public health" : item.sourceType === "government" ? "Government" : "NGO"}
+                  </span>
+                )}
+                {item.sourceType === "hmd" && (
+                  <span className="inline-block text-[10px] font-semibold text-hmd-blue/70 uppercase tracking-widest bg-hmd-blue/5 rounded-full px-2 py-0.5 mb-2">
+                    HMD
+                  </span>
+                )}
+                <p className="text-sm text-gray-700 leading-relaxed mb-2">{item.evidenceText}</p>
+                <a
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs font-semibold text-hmd-teal hover:underline inline-flex items-center gap-1"
+                >
+                  {item.shortLabel}
+                  <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-2.5 h-2.5">
+                    <path d="M1 11L11 1M11 1H4.5M11 1V7.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </a>
               </div>
             ))}
           </div>

@@ -238,6 +238,7 @@ function buildFormSummary(f: FormData): FormSummary {
     mainConcernKey: f.main_concerns[0] ?? "",
     mainConcernLabel: concernOption?.label ?? "",
     confidenceLabel: confidenceOption?.label ?? "",
+    mainUseKeys: f.main_use,
     mainUseLabels: f.main_use.map((v) => USE_OPTIONS.find((o) => o.value === v)?.label ?? v),
   };
 }
