@@ -2,229 +2,218 @@
 
 import { AssessmentResponse, FormSummary } from "@/lib/types";
 
-interface HmdPathSectionProps {
-  result: AssessmentResponse;
-  summary: FormSummary | null;
-}
+export type PathKey = "protected" | "guided" | "flexible";
 
-// ── Path definitions ──────────────────────────────────────────────────────────
-
-type PathKey = "protected" | "guided" | "flexible";
+// ── Path config ───────────────────────────────────────────────────────────────
 
 type PathConfig = {
-  approach: string;
   product: string;
-  why: (isFirst: boolean | null) => string;
-  capabilities: string[];
+  approach: string;
   ctaUrl: string;
-  honestNote: string;
 };
 
 const PATH_CONFIG: Record<PathKey, PathConfig> = {
   protected: {
-    approach: "Protected Start",
     product: "HMD Fuse + HarmBlock+",
-    why: (isFirst) =>
-      isFirst !== false
-        ? "Your family is introducing smartphone use gradually and prioritising protection and supervision."
-        : "Your family's approach focuses on rebuilding clearer digital boundaries with stronger protection in place.",
-    capabilities: [
-      "Starts without unrestricted app access",
-      "Trusted contacts setup",
-      "Parent-managed app controls",
-      "HarmBlock+ helps reduce exposure to nude and sexual imagery",
-      "Gradual independence model",
-    ],
+    approach: "Protected Start",
     ctaUrl: "https://www.hmd.com/fuse",
-    honestNote:
-      "Family conversations and agreed rules will always have a greater impact than device choice alone.",
   },
   guided: {
-    approach: "Guided Independence",
     product: "HMD Fusion X1",
-    why: (isFirst) =>
-      isFirst !== false
-        ? "Your family approach balances supervision with growing autonomy, supporting independence at a steady pace."
-        : "Your family is building on existing habits with clearer structure, growing trust, and gradual independence.",
-    capabilities: [
-      "App management controls",
-      "Trusted contacts",
-      "Location features",
-      "Screen-time support",
-      "Gradual increase in independence",
-    ],
+    approach: "Guided Independence",
     ctaUrl: "https://www.hmd.com",
-    honestNote:
-      "Agreed family rules will have the most impact — the right device helps make them easier to maintain.",
   },
   flexible: {
+    product: "Standard HMD phone with family controls",
     approach: "Flexible Boundaries",
-    product: "Fusion X1 or standard HMD smartphone with family controls",
-    why: () =>
-      "Your family has the foundations in place for confident, flexible digital use with agreed boundaries.",
-    capabilities: [
-      "Digital wellbeing tools",
-      "Screen time management",
-      "Family location features",
-      "Parental controls available",
-      "Standard app access",
-    ],
     ctaUrl: "https://www.hmd.com",
-    honestNote:
-      "The suggested family approach is likely to have a greater impact than device choice alone.",
   },
-};
-
-// ── Concern copy ──────────────────────────────────────────────────────────────
-
-const CONCERN_COPY: Record<string, { title: string; body: string }> = {
-  harmful_content: {
-    title: "Your main concern is harmful content.",
-    body: "The recommended HMD path includes tools to help manage content exposure as your family builds digital confidence together.",
-  },
-  strangers: {
-    title: "Your main concern is contact from unknown people.",
-    body: "The recommended approach supports a graduated introduction — starting with trusted contacts before expanding access.",
-  },
-  cyberbullying: {
-    title: "Your family is concerned about online interactions.",
-    body: "TrustBridge recommends combining family conversations with safety-focused device features and gradual independence.",
-  },
-  screen_time: {
-    title: "Your concern is healthy device use.",
-    body: "Device choice alone will not resolve screen-time habits, but a structured setup alongside agreed family rules makes healthy habits easier to build.",
-  },
-  social_pressure: {
-    title: "Your concern is social pressure online.",
-    body: "The recommended path supports a more gradual introduction to social features, giving your family time to build digital confidence together.",
-  },
-  privacy: {
-    title: "Your concern is protecting your child's privacy.",
-    body: "The recommended HMD path is designed with privacy considerations for younger users, supporting a safer introduction to digital life.",
-  },
-  not_sure: {
-    title: "You are still forming your priorities.",
-    body: "A safety-focused approach gives your family time to build agreements and habits before expanding digital independence.",
-  },
-};
-
-const FALLBACK_CONCERN_COPY = {
-  title: "Your family is beginning a digital journey.",
-  body: "The recommended HMD path is designed to support a structured, gradual approach rather than unrestricted access from day one.",
 };
 
 // ── Path derivation ───────────────────────────────────────────────────────────
 
-function derivePathKey(result: AssessmentResponse, summary: FormSummary | null): PathKey {
+export function derivePathKey(result: AssessmentResponse, summary: FormSummary | null): PathKey {
   const level = result.readiness_level;
   const isFirst = summary?.isFirstSmartphone;
   const age = summary?.childAge ?? 0;
-
   if (level === "ready_with_boundaries") return "flexible";
   if (level === "moderate") return "guided";
-  // not_ready
-  if (isFirst === false) return "guided"; // existing phone → no "Protected Start" framing
-  if (age >= 16) return "guided";         // older teens → guided, not restricted
+  if (isFirst === false) return "guided";
+  if (age >= 16) return "guided";
   return "protected";
 }
 
-// ── Component ─────────────────────────────────────────────────────────────────
-
-export default function HmdPathSection({ result, summary }: HmdPathSectionProps) {
-  const pathKey = derivePathKey(result, summary);
-  const path = PATH_CONFIG[pathKey];
-  const isFirst = summary?.isFirstSmartphone ?? null;
-
-  const concernKey = summary?.mainConcernKey || result.risk_profile[0]?.key || "";
-  const concernLabel = summary?.mainConcernLabel || result.risk_profile[0]?.label || "";
-  const concernCopy = CONCERN_COPY[concernKey] ?? FALLBACK_CONCERN_COPY;
-
-  const contextItems: string[] = [];
-  if (summary?.ageLabel) contextItems.push(`Age: ${summary.ageLabel}`);
-  if (summary?.isFirstSmartphone != null) {
-    contextItems.push(
-      summary.isFirstSmartphone ? "First smartphone" : "Previously had a smartphone"
-    );
-  }
-  if (concernLabel) contextItems.push(`Main concern: ${concernLabel}`);
-  contextItems.push(`Family approach: ${result.recommended_parenting_approach}`);
-
-  return (
-    <div className="space-y-3">
-
-      {/* Main path card */}
-      <div className="rounded-2xl border border-hmd-teal/30 bg-gradient-to-br from-teal-50 to-blue-50 p-5 space-y-4">
-
-        <div className="flex items-start gap-3">
-          <div className="flex-shrink-0 w-8 h-8 rounded-full bg-hmd-teal/10 flex items-center justify-center mt-0.5">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#00A99D" strokeWidth="2" className="w-4 h-4">
-              <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </div>
-          <div>
-            <p className="text-xs font-semibold text-hmd-teal uppercase tracking-widest">
-              Your Recommended HMD Path
-            </p>
-            <p className="text-xs text-gray-500 leading-relaxed mt-1">
-              Based on your family approach and answers, TrustBridge has identified a matching HMD product path.
-            </p>
-          </div>
-        </div>
-
-        {/* Context summary */}
-        {contextItems.length > 0 && (
-          <div className="bg-white/70 rounded-xl p-3 space-y-1.5">
-            <p className="text-xs font-semibold text-gray-500 mb-2">Based on your answers:</p>
-            {contextItems.map((item, i) => (
-              <div key={i} className="flex items-center gap-2">
-                <span className="text-hmd-teal text-xs font-bold flex-shrink-0">✓</span>
-                <span className="text-xs text-gray-700">{item}</span>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Why this path fits */}
-        <p className="text-sm text-gray-700 leading-relaxed">{path.why(isFirst)}</p>
-
-        {/* Product recommendation */}
-        <div className="bg-white/80 rounded-xl p-4 space-y-3">
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest">Recommended HMD support</p>
-          <p className="text-base font-bold text-gray-900">{path.product}</p>
-          <div className="space-y-1.5">
-            <p className="text-xs font-semibold text-gray-500">Key capabilities</p>
-            {path.capabilities.map((cap, i) => (
-              <div key={i} className="flex items-start gap-2">
-                <span className="text-hmd-teal font-bold text-xs flex-shrink-0 mt-0.5">✓</span>
-                <span className="text-xs text-gray-700 leading-relaxed">{cap}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-      </div>
-
-      {/* Concern card */}
-      <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4 space-y-1.5">
-        <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2">
-          Why this matters for your family
-        </p>
-        <p className="text-sm font-semibold text-gray-800 leading-snug">{concernCopy.title}</p>
-        <p className="text-sm text-gray-600 leading-relaxed">{concernCopy.body}</p>
-      </div>
-
-      {/* Honest note */}
-      <p className="text-xs text-gray-400 text-center leading-relaxed px-4">{path.honestNote}</p>
-
-    </div>
-  );
+export function getProductName(result: AssessmentResponse, summary: FormSummary | null): string {
+  return PATH_CONFIG[derivePathKey(result, summary)].product;
 }
 
-// Export CTA URL so page.tsx can build a dynamic button
 export function getHmdPathCtaUrl(result: AssessmentResponse, summary: FormSummary | null): string {
   return PATH_CONFIG[derivePathKey(result, summary)].ctaUrl;
 }
 
-export function getHmdPathApproach(result: AssessmentResponse, summary: FormSummary | null): string {
-  return PATH_CONFIG[derivePathKey(result, summary)].approach;
+// ── Why sentence ──────────────────────────────────────────────────────────────
+
+const WHY_SENTENCES: Record<PathKey, Record<string, string>> = {
+  protected: {
+    strangers:      "Designed for families starting carefully, with trusted contacts and protection from unknown online contact.",
+    screen_time:    "Designed for a structured introduction with parent-managed access and gradual screen-time habits from day one.",
+    harmful_content:"Includes HarmBlock+ and parent-managed controls to reduce exposure to harmful content from the start.",
+    cyberbullying:  "Supports a careful, trusted introduction to online communication with parent-visible controls.",
+    social_pressure:"Delays unrestricted social access, giving your family time to build digital confidence together.",
+    privacy:        "Built with privacy-conscious design to reduce data exposure in the early stages of smartphone use.",
+    not_sure:       "Designed for families prioritising a safe, structured introduction to smartphone use.",
+    default:        "Designed for families prioritising a safe, structured introduction to smartphone use.",
+  },
+  guided: {
+    strangers:      "Supports gradual independence with trusted-contact controls and app management for safer communication.",
+    screen_time:    "Supports screen-time structure, app management and gradual independence as your family builds trust.",
+    harmful_content:"Provides app management and family controls to help manage content exposure as independence grows.",
+    cyberbullying:  "Balances online access with parental visibility and trusted communication tools.",
+    social_pressure:"Supports a measured approach to social features alongside growing digital independence.",
+    privacy:        "Gives families visibility and control while allowing gradual, trust-based digital independence.",
+    not_sure:       "Supports your family's balanced approach with app management and gradual independence.",
+    default:        "Supports your family's balanced approach with app management and gradual independence.",
+  },
+  flexible: {
+    strangers:      "Gives your family the tools to set communication boundaries while supporting responsible online independence.",
+    screen_time:    "Provides digital wellbeing tools and screen-time management for a family with clear habits in place.",
+    harmful_content:"Family controls are available to complement the healthy digital habits your family has already built.",
+    cyberbullying:  "Supports open communication and family-agreed boundaries for confident, independent online use.",
+    social_pressure:"Fits a family with clear digital values who want tools to reinforce agreed communication habits.",
+    privacy:        "Supports a privacy-conscious family with optional controls and trust-based, open device use.",
+    not_sure:       "Supports your family's confident approach with flexible tools and family-agreed boundaries.",
+    default:        "Supports your family's confident approach with flexible tools and family-agreed boundaries.",
+  },
+};
+
+export function buildWhy(result: AssessmentResponse, summary: FormSummary | null): string {
+  const pathKey = derivePathKey(result, summary);
+  const concernKey = summary?.mainConcernKey || result.risk_profile[0]?.key || "default";
+  return WHY_SENTENCES[pathKey][concernKey] ?? WHY_SENTENCES[pathKey].default;
+}
+
+// ── Smartphone comparison panel (accordion 2 content) ────────────────────────
+
+export const CHALLENGE_LABEL: Record<string, string> = {
+  strangers:      "Online Strangers",
+  screen_time:    "Healthy Screen Habits",
+  harmful_content:"Harmful Content",
+  cyberbullying:  "Online Respect",
+  social_pressure:"Social Pressure",
+  privacy:        "Digital Privacy",
+  not_sure:       "Overall Safety",
+};
+
+const REGULAR_PHONE_TEXT: Record<string, string> = {
+  strangers:      "Any messaging app can be installed without restriction. Parents must individually manage each service to control who can contact their child.",
+  screen_time:    "Full app access by default. Screen-time management requires configuring controls across apps, services and system settings — often separately.",
+  harmful_content:"Content access depends on per-app settings. Parents must manage content controls across every app, browser and streaming service independently.",
+  cyberbullying:  "Social and messaging apps are fully open by default. Parents have limited built-in visibility across different services and platforms.",
+  social_pressure:"Social apps and notifications are unrestricted by default, making it harder to manage peer pressure and always-on communication.",
+  privacy:        "App permissions and data sharing are managed per-app. Parents must configure privacy settings independently across all installed services.",
+  not_sure:       "A standard smartphone offers full access from day one, which requires significant parent configuration to manage safely.",
+  default:        "A standard smartphone offers full access from day one, requiring parents to configure safety controls across all apps and services.",
+};
+
+const HMD_PATH_TEXT: Record<PathKey, Record<string, string>> = {
+  protected: {
+    strangers:      "HMD Fuse supports a trusted-contact model, starting without unrestricted messaging before your family is ready to expand access.",
+    screen_time:    "HMD Fuse includes parent-managed app controls and a gradual introduction model, making it easier to build screen-time habits from day one.",
+    harmful_content:"HMD Fuse + HarmBlock+ is designed to help reduce exposure to nude and sexual imagery across the device experience.",
+    cyberbullying:  "HMD Fuse supports a careful introduction to online communication, starting with trusted contacts before broader social access.",
+    social_pressure:"HMD Fuse delays unrestricted social access, giving your family time to build confidence and agreed digital habits together.",
+    privacy:        "HMD Fuse is designed with privacy considerations for younger users, limiting data exposure in the early stages.",
+    not_sure:       "HMD Fuse is designed for a safer, structured start — reducing parent setup burden while supporting healthy digital habits.",
+    default:        "HMD Fuse is designed for a safer, structured start — reducing parent setup burden while supporting healthy digital habits.",
+  },
+  guided: {
+    strangers:      "HMD Fusion X1 provides trusted contacts and location features, helping families stay connected while managing external contact.",
+    screen_time:    "HMD Fusion X1 includes screen-time support and app management tools, supporting healthy habits as independence grows.",
+    harmful_content:"HMD Fusion X1 includes parent-managed app controls to help reduce harmful content exposure as independence develops.",
+    cyberbullying:  "HMD Fusion X1 provides family visibility tools and trusted communication features alongside growing digital independence.",
+    social_pressure:"HMD Fusion X1 supports a gradual introduction to social features with parent-managed controls and screen-time support.",
+    privacy:        "HMD Fusion X1 includes privacy-conscious design with parent-managed app access and location features.",
+    not_sure:       "HMD Fusion X1 supports a balanced introduction with family controls and gradual digital independence.",
+    default:        "HMD Fusion X1 supports a balanced introduction with family controls and gradual digital independence.",
+  },
+  flexible: {
+    strangers:      "HMD smartphones provide family connectivity tools and parental controls to reinforce agreed communication boundaries.",
+    screen_time:    "HMD smartphones include digital wellbeing tools and parental controls you can configure to match your family's agreed boundaries.",
+    harmful_content:"HMD smartphones include parental controls for content management to complement your family's existing approach.",
+    cyberbullying:  "HMD smartphones support family-agreed communication boundaries with available parental controls and digital wellbeing tools.",
+    social_pressure:"HMD smartphones provide digital wellbeing tools to support social media balance alongside your family's agreed habits.",
+    privacy:        "HMD smartphones provide standard Android privacy controls you can configure alongside family-agreed digital agreements.",
+    not_sure:       "HMD smartphones provide a familiar experience with family controls available when needed.",
+    default:        "HMD smartphones provide a familiar experience with family controls available when needed.",
+  },
+};
+
+const PATH_CAPABILITIES: Record<PathKey, string[]> = {
+  protected: [
+    "Starts without unrestricted app access",
+    "Trusted contacts setup",
+    "Parent-managed app controls",
+    "HarmBlock+ helps reduce exposure to nude and sexual imagery",
+    "Gradual independence model",
+  ],
+  guided: [
+    "App management controls",
+    "Trusted contacts",
+    "Location features",
+    "Screen-time support",
+    "Gradual increase in independence",
+  ],
+  flexible: [
+    "Digital wellbeing tools",
+    "Screen time management",
+    "Family location features",
+    "Parental controls available",
+    "Standard app access",
+  ],
+};
+
+interface ComparisonPanelProps {
+  result: AssessmentResponse;
+  summary: FormSummary | null;
+}
+
+export function SmartphoneComparisonContent({ result, summary }: ComparisonPanelProps) {
+  const pathKey = derivePathKey(result, summary);
+  const concernKey = summary?.mainConcernKey || result.risk_profile[0]?.key || "default";
+  const challengeLabel = CHALLENGE_LABEL[concernKey] ?? "Digital Safety";
+  const regularText = REGULAR_PHONE_TEXT[concernKey] ?? REGULAR_PHONE_TEXT.default;
+  const hmdText = HMD_PATH_TEXT[pathKey][concernKey] ?? HMD_PATH_TEXT[pathKey].default;
+  const capabilities = PATH_CAPABILITIES[pathKey];
+  const product = PATH_CONFIG[pathKey].product;
+
+  return (
+    <div className="space-y-4 pt-2">
+
+      <div className="flex items-center gap-2 flex-wrap">
+        <span className="text-xs font-semibold text-gray-400">Your challenge:</span>
+        <span className="bg-amber-50 border border-amber-200 text-amber-800 text-xs font-semibold px-3 py-1 rounded-full">
+          {challengeLabel}
+        </span>
+      </div>
+
+      <div className="rounded-xl border border-gray-100 bg-gray-50 p-4">
+        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Regular smartphone</p>
+        <p className="text-sm text-gray-600 leading-relaxed">{regularText}</p>
+      </div>
+
+      <div className="rounded-xl border border-hmd-teal/20 bg-teal-50/40 p-4 space-y-3">
+        <p className="text-[10px] font-bold text-hmd-teal uppercase tracking-widest">{product}</p>
+        <p className="text-sm text-gray-700 leading-relaxed">{hmdText}</p>
+        <div className="space-y-1.5 pt-1">
+          {capabilities.map((cap, i) => (
+            <div key={i} className="flex items-start gap-2">
+              <span className="text-hmd-teal font-bold text-xs flex-shrink-0 mt-0.5">✓</span>
+              <span className="text-xs text-gray-700 leading-relaxed">{cap}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+    </div>
+  );
 }
