@@ -232,114 +232,320 @@ export default function Home() {
   // ── Landing ─────────────────────────────────────────────────────────────────
   if (appState === "landing") {
     return (
-      <main className="min-h-screen bg-white flex flex-col">
+      <main className="min-h-screen bg-white overflow-x-hidden">
 
-        {/* Above fold */}
-        <div className="flex-1 flex flex-col items-center justify-center px-6 py-14 text-center">
-          <div className="max-w-sm w-full mx-auto">
-
-            <span className="inline-block text-xs font-bold tracking-widest text-hmd-teal uppercase mb-7">
+        {/* ── Navigation ────────────────────────────────────────────────── */}
+        <nav className="relative z-20 border-b border-gray-100 bg-white/95 backdrop-blur-sm sticky top-0">
+          <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+            <span className="text-sm font-bold text-hmd-teal tracking-wider uppercase">
               HMD TrustBridge
             </span>
+            <div className="hidden md:flex items-center gap-8">
+              <a href="#how-it-works" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">How it works</a>
+              <a href="#helps-with"   className="text-sm text-gray-500 hover:text-gray-900 transition-colors">What it helps with</a>
+              <a href="#research"     className="text-sm text-gray-500 hover:text-gray-900 transition-colors">Research</a>
+              <a href="#resources"    className="text-sm text-gray-500 hover:text-gray-900 transition-colors">Resources</a>
+            </div>
+            <button
+              onClick={() => setAppState("assessing")}
+              className="bg-hmd-blue text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-hmd-blue/90 transition-colors"
+            >
+              Get started
+            </button>
+          </div>
+        </nav>
 
-            <h1 className="text-[2rem] font-bold text-gray-900 leading-tight tracking-tight mb-4">
-              Find the safer smartphone path<br />
-              <span className="text-hmd-teal">for your child</span>
-            </h1>
+        {/* ── Hero ──────────────────────────────────────────────────────── */}
+        <section className="relative px-6 pt-14 pb-20 lg:pt-20 lg:pb-28 overflow-hidden">
 
-            <p className="text-gray-600 text-[0.95rem] leading-relaxed max-w-xs mx-auto mb-8">
-              A 60-second guided check to help your child build healthy phone habits — without over-control.
-            </p>
+          {/* Background blobs */}
+          <div className="absolute -top-20 -left-20 w-96 h-96 rounded-full bg-hmd-teal/5 blur-3xl pointer-events-none" aria-hidden="true" />
+          <div className="absolute top-0 right-0 w-80 h-80 rounded-full bg-hmd-blue/5 blur-3xl pointer-events-none" aria-hidden="true" />
 
-            <div className="space-y-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+
+              {/* Left: copy */}
+              <div className="space-y-7">
+
+                <span className="inline-flex items-center gap-2 bg-teal-50 border border-teal-100 text-hmd-teal text-xs font-semibold px-4 py-2 rounded-full">
+                  <span className="w-1.5 h-1.5 rounded-full bg-hmd-teal flex-shrink-0" aria-hidden="true" />
+                  Parent-first. Child-focused.
+                </span>
+
+                <h1 className="text-4xl lg:text-5xl font-bold text-slate-900 leading-[1.12] tracking-tight">
+                  Find the safer smartphone path
+                  <span className="text-hmd-teal block mt-1">for your child</span>
+                </h1>
+
+                <p className="text-lg text-gray-600 leading-relaxed max-w-md">
+                  A 60-second guided check to help your child build healthy phone habits — without over-control.
+                </p>
+
+                <div className="space-y-4">
+                  <button
+                    onClick={() => setAppState("assessing")}
+                    className="inline-flex items-center gap-2.5 bg-hmd-blue text-white font-semibold px-8 py-4 rounded-2xl shadow-lg hover:bg-hmd-blue/90 transition-all text-[0.95rem]"
+                  >
+                    Check my child&rsquo;s phone readiness
+                    <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 flex-shrink-0" aria-hidden="true">
+                      <path fillRule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clipRule="evenodd" />
+                    </svg>
+                  </button>
+
+                  <div className="flex flex-wrap items-center gap-5">
+                    {["Parent-first", "Research-informed", "No child name needed"].map((label) => (
+                      <div key={label} className="flex items-center gap-1.5 text-xs text-gray-500">
+                        <svg viewBox="0 0 20 20" fill="none" className="w-3.5 h-3.5 text-hmd-teal flex-shrink-0" aria-hidden="true">
+                          <path d="M4 10l4 4 8-8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                        {label}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2 pt-1">
+                  <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest mr-1">
+                    You&rsquo;ll get:
+                  </span>
+                  <span className="bg-gray-100 text-gray-700 text-xs font-medium px-3 py-1.5 rounded-full">Child Profile</span>
+                  <span className="bg-gray-100 text-gray-700 text-xs font-medium px-3 py-1.5 rounded-full">Main Challenge</span>
+                  <span className="bg-blue-50 border border-blue-100 text-hmd-blue text-xs font-medium px-3 py-1.5 rounded-full">HMD Path</span>
+                </div>
+
+              </div>
+
+              {/* Right: visual panel — desktop only */}
+              <div className="relative hidden lg:block">
+
+                <div className="absolute -top-8 -right-8 w-64 h-64 bg-hmd-teal/10 rounded-full blur-3xl pointer-events-none" aria-hidden="true" />
+                <div className="absolute -bottom-8 -left-8 w-52 h-52 bg-hmd-blue/10 rounded-full blur-3xl pointer-events-none" aria-hidden="true" />
+
+                {/* Image placeholder */}
+                <div className="relative rounded-3xl overflow-hidden aspect-[4/3] shadow-2xl bg-gradient-to-br from-teal-50 via-slate-50 to-blue-50">
+
+                  <div className="absolute top-5 left-5 grid grid-cols-5 gap-1.5" aria-hidden="true">
+                    {Array.from({length: 20}).map((_, i) => (
+                      <div key={i} className="w-1 h-1 rounded-full bg-hmd-teal/30" />
+                    ))}
+                  </div>
+
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <svg viewBox="0 0 220 170" fill="none" className="w-56 opacity-60" aria-hidden="true">
+                      <ellipse cx="80"  cy="42" rx="26" ry="26" fill="#00A99D" fillOpacity="0.25"/>
+                      <path d="M38 148 C38 105 122 105 122 148" fill="#00A99D" fillOpacity="0.15"/>
+                      <ellipse cx="148" cy="54" rx="20" ry="20" fill="#0057B8" fillOpacity="0.2"/>
+                      <path d="M114 148 C114 113 182 113 182 148" fill="#0057B8" fillOpacity="0.12"/>
+                      <rect x="96" y="68" width="30" height="52" rx="6" fill="#1a2540" fillOpacity="0.12"/>
+                      <rect x="99" y="72" width="24" height="40" rx="4" fill="#E5F4F3" fillOpacity="0.9"/>
+                      <rect x="103" y="76" width="16" height="3" rx="1.5" fill="#00A99D" fillOpacity="0.4"/>
+                      <rect x="103" y="82" width="12" height="2" rx="1" fill="#94a3b8" fillOpacity="0.5"/>
+                      <rect x="103" y="87" width="14" height="2" rx="1" fill="#94a3b8" fillOpacity="0.5"/>
+                    </svg>
+                  </div>
+
+                  <div className="absolute top-4 right-4 w-24 h-24 rounded-full border-4 border-hmd-teal/10" aria-hidden="true" />
+                  <div className="absolute top-8 right-8 w-16 h-16 rounded-full border-4 border-hmd-blue/10" aria-hidden="true" />
+
+                </div>
+
+                {/* Floating result card */}
+                <div className="absolute -bottom-5 -left-8 bg-white rounded-2xl shadow-xl border border-gray-100 p-4 w-60">
+                  <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-3">
+                    Your child&rsquo;s TrustBridge Path
+                  </p>
+
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="relative flex-shrink-0 w-14 h-14">
+                      <svg viewBox="0 0 56 56" className="w-14 h-14 -rotate-90" aria-hidden="true">
+                        <circle cx="28" cy="28" r="22" fill="none" stroke="#F3F4F6" strokeWidth="5"/>
+                        <circle cx="28" cy="28" r="22" fill="none" stroke="#00A99D" strokeWidth="5"
+                          strokeLinecap="round" strokeDasharray="138.2" strokeDashoffset="35"/>
+                      </svg>
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="text-xs font-bold text-slate-900">75%</span>
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-slate-900">Guided start</p>
+                      <p className="text-[11px] text-gray-500 leading-snug mt-0.5">
+                        Small steps lead to lasting habits.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="border-t border-gray-50 pt-2 space-y-1.5">
+                    {[
+                      { label: "Focus area", value: "Screen-time balance" },
+                      { label: "Next step",  value: "Set healthy boundaries" },
+                      { label: "Goal",       value: "Build confidence" },
+                    ].map(({ label, value }) => (
+                      <div key={label} className="flex items-center justify-between">
+                        <span className="text-[10px] text-gray-400">{label}</span>
+                        <span className="text-[10px] font-semibold text-hmd-blue">{value}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        {/* ── What TrustBridge helps with ──────────────────────────────── */}
+        <section id="helps-with" className="px-6 py-16 lg:py-20 bg-gray-50/60 border-y border-gray-100">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-10">
+              <p className="text-[10px] font-bold tracking-widest text-hmd-teal uppercase mb-3">Coverage</p>
+              <h2 className="text-2xl lg:text-3xl font-bold text-slate-900 tracking-tight">
+                What TrustBridge helps with
+              </h2>
+            </div>
+            <div className="grid sm:grid-cols-3 gap-5">
+              {[
+                {
+                  title:  "Safer use",
+                  text:   "Practical guidance for online risks and trusted contacts.",
+                  iconBg: "bg-hmd-teal/10",
+                  stroke: "#00A99D",
+                  path:   "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z",
+                },
+                {
+                  title:  "Healthy habits",
+                  text:   "Support screen-time balance without over-control.",
+                  iconBg: "bg-hmd-blue/10",
+                  stroke: "#0057B8",
+                  path:   "M12 3v1m0 16v1M4.22 4.22l.707.707m12.02 12.02l.707.707M1 12h2m18 0h2M4.22 19.78l.707-.707M18.95 5.05l.707-.707M12 7a5 5 0 100 10A5 5 0 0012 7z",
+                },
+                {
+                  title:  "Growing independence",
+                  text:   "Help children build confidence step by step.",
+                  iconBg: "bg-gray-100",
+                  stroke: "#6B7280",
+                  path:   "M13 7l5 5m0 0l-5 5m5-5H6",
+                },
+              ].map(({ title, text, iconBg, stroke, path }) => (
+                <div key={title} className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow">
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-4 ${iconBg}`}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke={stroke} strokeWidth="2"
+                      strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5" aria-hidden="true">
+                      <path d={path}/>
+                    </svg>
+                  </div>
+                  <h3 className="text-base font-semibold text-slate-900 mb-1.5">{title}</h3>
+                  <p className="text-sm text-gray-500 leading-relaxed">{text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── How it works ────────────────────────────────────────────── */}
+        <section id="how-it-works" className="px-6 py-16 lg:py-24">
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center mb-14">
+              <p className="text-[10px] font-bold tracking-widest text-hmd-teal uppercase mb-3">Process</p>
+              <h2 className="text-2xl lg:text-3xl font-bold text-slate-900 tracking-tight">How it works</h2>
+            </div>
+            <div className="grid sm:grid-cols-3 gap-10">
+              {[
+                {
+                  n:     "1",
+                  title: "Take the 60-second check",
+                  text:  "Answer a few simple questions about your child.",
+                },
+                {
+                  n:     "2",
+                  title: "Get your personalised results",
+                  text:  "See your child’s profile, main challenge, and recommended path.",
+                },
+                {
+                  n:     "3",
+                  title: "Take confident action",
+                  text:  "Follow practical steps to build healthy, balanced habits.",
+                },
+              ].map(({ n, title, text }) => (
+                <div key={n} className="flex flex-col items-center text-center">
+                  <div className="w-14 h-14 rounded-full bg-hmd-blue text-white text-xl font-bold flex items-center justify-center mb-6 shadow-lg">
+                    {n}
+                  </div>
+                  <h3 className="text-base font-semibold text-slate-900 mb-2">{title}</h3>
+                  <p className="text-sm text-gray-500 leading-relaxed">{text}</p>
+                </div>
+              ))}
+            </div>
+            <div className="mt-12 text-center">
               <button
                 onClick={() => setAppState("assessing")}
-                className="tb-btn-primary"
+                className="inline-flex items-center gap-2 bg-hmd-blue text-white font-semibold px-7 py-4 rounded-2xl shadow-lg hover:bg-hmd-blue/90 transition-all"
               >
                 Check my child&rsquo;s phone readiness
+                <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4" aria-hidden="true">
+                  <path fillRule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clipRule="evenodd" />
+                </svg>
               </button>
+            </div>
+          </div>
+        </section>
 
-              <p className="text-xs text-gray-400">
-                No child name needed · Parent-first · Research-informed
+        {/* ── Guidance you can trust ──────────────────────────────────── */}
+        <section id="research" className="px-6 py-16 lg:py-20 border-t border-gray-100">
+          <div className="max-w-4xl mx-auto">
+            <div className="rounded-3xl bg-gradient-to-br from-teal-50 via-white to-blue-50 border border-teal-100/50 p-8 lg:p-12 text-center shadow-sm">
+              <p className="text-[10px] font-bold tracking-widest text-hmd-teal uppercase mb-4">Trust</p>
+              <h2 className="text-2xl lg:text-3xl font-bold text-slate-900 mb-3 tracking-tight">
+                Guidance you can trust.
+              </h2>
+              <p className="text-gray-600 leading-relaxed mb-8 max-w-sm mx-auto">
+                Built on research. Designed for parents.
               </p>
-
-              {/* Outcome preview */}
-              <div className="flex flex-wrap items-center justify-center gap-1.5 pt-1">
-                <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest mr-0.5">
-                  You&rsquo;ll get:
-                </span>
-                <span className="bg-gray-100 text-gray-600 text-xs px-2.5 py-1 rounded-full font-medium">
-                  Child Profile
-                </span>
-                <span className="text-gray-300 text-xs">·</span>
-                <span className="bg-gray-100 text-gray-600 text-xs px-2.5 py-1 rounded-full font-medium">
-                  Main Challenge
-                </span>
-                <span className="text-gray-300 text-xs">·</span>
-                <span className="bg-blue-50 text-hmd-blue text-xs px-2.5 py-1 rounded-full font-medium">
-                  HMD Path
-                </span>
+              <div className="grid sm:grid-cols-3 gap-4 text-left">
+                {[
+                  {
+                    title: "Research-informed",
+                    text:  "Draws on independent child-safety and digital health research.",
+                  },
+                  {
+                    title: "Parent-led",
+                    text:  "You stay in control. TrustBridge helps you make the right decision.",
+                  },
+                  {
+                    title: "Age-appropriate",
+                    text:  "Guidance calibrated to your child’s age and readiness.",
+                  },
+                ].map(({ title, text }) => (
+                  <div key={title} className="bg-white/80 rounded-2xl p-5 border border-white shadow-sm">
+                    <div className="w-8 h-8 rounded-lg bg-hmd-teal/10 flex items-center justify-center mb-3">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="#00A99D" strokeWidth="2.5"
+                        strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4" aria-hidden="true">
+                        <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                      </svg>
+                    </div>
+                    <p className="text-sm font-semibold text-slate-900 mb-1">{title}</p>
+                    <p className="text-xs text-gray-500 leading-relaxed">{text}</p>
+                  </div>
+                ))}
               </div>
             </div>
-
           </div>
-        </div>
+        </section>
 
-        {/* Below fold — value cards */}
-        <div className="px-6 py-12 bg-gray-50/40 border-t border-gray-100">
-          <div className="max-w-sm mx-auto">
-
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-5 text-center">
-              What TrustBridge helps with
+        {/* ── Resources / Footer ──────────────────────────────────────── */}
+        <section id="resources" className="px-6 py-8 border-t border-gray-100 bg-gray-50/40">
+          <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <span className="text-xs font-bold tracking-widest text-hmd-teal uppercase">HMD TrustBridge</span>
+            <p className="text-xs text-gray-400 text-center">
+              &copy; 2025 HMD &middot; Research-informed digital safety for parents
             </p>
-
-            <div className="space-y-3">
-
-              <div className="rounded-2xl border border-teal-100 bg-white p-4">
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-hmd-teal/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#00A99D" strokeWidth="2" className="w-4 h-4">
-                      <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-gray-800 mb-0.5">Safer use</p>
-                    <p className="text-xs text-gray-500 leading-relaxed">Practical guidance for online risks and trusted contacts.</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="rounded-2xl border border-blue-100 bg-white p-4">
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-hmd-blue/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#0057B8" strokeWidth="2" className="w-4 h-4">
-                      <path d="M12 3v1m0 16v1M4.22 4.22l.707.707m12.02 12.02l.707.707M1 12h2m18 0h2M4.22 19.78l.707-.707M18.95 5.05l.707-.707M12 7a5 5 0 100 10A5 5 0 0012 7z" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-gray-800 mb-0.5">Healthy habits</p>
-                    <p className="text-xs text-gray-500 leading-relaxed">Support screen-time balance without over-control.</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="rounded-2xl border border-gray-100 bg-white p-4">
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2" className="w-4 h-4">
-                      <path d="M13 7l5 5m0 0l-5 5m5-5H6" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-gray-800 mb-0.5">Growing independence</p>
-                    <p className="text-xs text-gray-500 leading-relaxed">Help children build confidence step by step.</p>
-                  </div>
-                </div>
-              </div>
-
-            </div>
+            <button onClick={() => setAppState("assessing")}
+              className="text-xs font-semibold text-hmd-blue hover:underline">
+              Check my child&rsquo;s readiness &rarr;
+            </button>
           </div>
-        </div>
+        </section>
 
       </main>
     );
