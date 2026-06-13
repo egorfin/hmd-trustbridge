@@ -86,10 +86,18 @@ const SOCIAL_CONCERN_MAP: Record<string, string> = {
 
 const LOADING_MESSAGES = [
   "Understanding your family's needs…",
-  "Identifying focus areas…",
-  "Creating your family's digital plan…",
-  "Preparing your personalised approach…",
+  "Matching answers to child-safety guidance…",
+  "Comparing safer-phone paths…",
+  "Preparing your family plan…",
 ];
+
+const USE_ICONS: Record<string, string> = {
+  family:       "M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z",
+  school:       "M12 14l9-5-9-5-9 5 9 5zM12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z",
+  friends:      "M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z",
+  games:        "M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z",
+  social_media: "M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9",
+};
 
 // ── Step logic ────────────────────────────────────────────────────────────────
 
@@ -342,19 +350,7 @@ export default function AssessmentForm({ onComplete, onBack }: AssessmentFormPro
 
   // ── Button styles ─────────────────────────────────────────────────────────
 
-  const btn = (sel: boolean) =>
-    `w-full text-left px-4 py-3 rounded-xl border-2 text-sm font-medium transition-all cursor-pointer ${
-      sel
-        ? "border-hmd-blue bg-hmd-blue text-white"
-        : "border-gray-200 bg-white text-gray-700 hover:border-hmd-blue hover:text-hmd-blue"
-    }`;
-
-  const gridBtn = (sel: boolean) =>
-    `py-3 px-3 rounded-xl border-2 text-sm font-medium text-left transition-all cursor-pointer ${
-      sel
-        ? "border-hmd-blue bg-hmd-blue text-white"
-        : "border-gray-200 bg-white text-gray-700 hover:border-hmd-blue hover:text-hmd-blue"
-    }`;
+  const btn = (sel: boolean) => `tb-option${sel ? " tb-option-selected" : ""}`;
 
   // ── Step options ───────────────────────────────────────────────────────────
 
@@ -396,14 +392,21 @@ export default function AssessmentForm({ onComplete, onBack }: AssessmentFormPro
 
       case "main_use":
         return (
-          <div className="grid grid-cols-2 gap-2">
-            {USE_OPTIONS.map((opt) => (
-              <button key={opt.value} className={gridBtn(form.main_use.includes(opt.value))} onClick={() => {
-                setForm({ ...form, main_use: toggleMulti(form.main_use, opt.value) });
-              }}>
-                {opt.label}
-              </button>
-            ))}
+          <div className="space-y-2">
+            {USE_OPTIONS.map((opt) => {
+              const sel = form.main_use.includes(opt.value);
+              return (
+                <button key={opt.value} className={`${btn(sel)} flex items-center justify-between gap-3`} onClick={() => {
+                  setForm({ ...form, main_use: toggleMulti(form.main_use, opt.value) });
+                }}>
+                  <span>{opt.label}</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"
+                    className={`w-5 h-5 flex-shrink-0 ${sel ? "text-hmd-blue" : "text-gray-300"}`}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d={USE_ICONS[opt.value] ?? ""} />
+                  </svg>
+                </button>
+              );
+            })}
           </div>
         );
 
@@ -574,15 +577,52 @@ export default function AssessmentForm({ onComplete, onBack }: AssessmentFormPro
   return (
     <div className="min-h-screen flex flex-col bg-white">
 
-      {/* Loading overlay */}
+      {/* Advisor Thinking overlay */}
       {loading && (
-        <div className="fixed inset-0 bg-white/90 backdrop-blur-sm flex items-center justify-center z-50 px-6">
-          <div className="text-center max-w-xs">
-            <div className="w-14 h-14 border-4 border-hmd-blue border-t-transparent rounded-full animate-spin mx-auto mb-5" />
-            <p className="text-gray-800 font-semibold text-lg">{LOADING_MESSAGES[loadingMsgIdx]}</p>
-            <p className="text-gray-400 text-sm mt-3">
-              Preparing your family&rsquo;s digital safety plan.
+        <div className="fixed inset-0 bg-white flex flex-col items-center justify-center z-50 px-6">
+          <div className="text-center max-w-xs w-full">
+
+            <p className="text-[10px] font-bold tracking-widest text-hmd-teal uppercase mb-8">
+              HMD TrustBridge
             </p>
+
+            <div className="flex items-center justify-center gap-2 mb-8">
+              {[0, 1, 2].map((i) => (
+                <span key={i} className="w-2 h-2 rounded-full bg-hmd-teal animate-bounce"
+                  style={{ animationDelay: `${i * 150}ms` }} />
+              ))}
+            </div>
+
+            <p className="text-lg font-semibold text-gray-900 mb-1 leading-snug">
+              {LOADING_MESSAGES[loadingMsgIdx]}
+            </p>
+            <p className="text-xs text-gray-400 mb-8">
+              Building your family&rsquo;s digital safety plan.
+            </p>
+
+            <div className="flex items-center justify-center gap-2 mb-8">
+              {LOADING_MESSAGES.map((_, i) => (
+                <span key={i} className={`rounded-full transition-all duration-300 ${
+                  i < loadingMsgIdx
+                    ? "w-2 h-2 bg-hmd-teal"
+                    : i === loadingMsgIdx
+                    ? "w-3 h-3 bg-hmd-teal"
+                    : "w-2 h-2 bg-gray-200"
+                }`} />
+              ))}
+            </div>
+
+            {loadingMsgIdx > 0 && (
+              <div className="space-y-1.5 text-left">
+                {LOADING_MESSAGES.slice(0, loadingMsgIdx).map((msg, i) => (
+                  <div key={i} className="flex items-center gap-2 text-xs text-gray-400">
+                    <span className="text-hmd-teal font-bold">✓</span>
+                    <span>{msg}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+
           </div>
         </div>
       )}
@@ -670,7 +710,7 @@ export default function AssessmentForm({ onComplete, onBack }: AssessmentFormPro
                     disabled={!valid || loading}
                     className={`tb-btn-primary ${!valid || loading ? "opacity-40 cursor-not-allowed" : ""}`}
                   >
-                    {isLast ? "Create my Digital Readiness Snapshot" : "Continue"}
+                    {isLast ? "Build my family plan" : "Continue"}
                   </button>
                 )}
               </>

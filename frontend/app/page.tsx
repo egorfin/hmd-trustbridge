@@ -10,6 +10,7 @@ import {
   buildWhy,
   derivePathKey,
   SmartphoneComparisonContent,
+  HmdPathHelpContent,
   CHALLENGE_LABEL,
 } from "@/components/HmdPathSection";
 import EvidenceChip from "@/components/EvidenceChip";
@@ -219,8 +220,9 @@ export default function Home() {
               HMD TrustBridge
             </span>
 
-            <h1 className="text-[1.85rem] font-bold text-gray-900 leading-tight tracking-tight">
-              Helping your child build<br />healthy phone habits
+            <h1 className="text-3xl font-bold text-gray-900 leading-tight tracking-tight">
+              Helping your child build<br />
+              <span className="text-hmd-teal">healthy phone habits</span>
             </h1>
 
             <p className="text-gray-500 text-sm leading-relaxed max-w-xs mx-auto">
@@ -504,7 +506,15 @@ export default function Home() {
           </div>
         </Accordion>
 
-        {/* ── Accordion 3: Family action plan ──────────────────────────────── */}
+        {/* ── Accordion 3: How this HMD path helps ─────────────────────────── */}
+        <Accordion
+          title="How this HMD path helps"
+          hint={`Features and design choices in ${productName} matched to your family's situation.`}
+        >
+          <HmdPathHelpContent result={result} summary={formSummary} />
+        </Accordion>
+
+        {/* ── Accordion 4: Family action plan ──────────────────────────────── */}
         <Accordion
           title="Family action plan"
           hint="Practical steps and a conversation starter for your family."

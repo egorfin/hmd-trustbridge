@@ -242,6 +242,75 @@ const PATH_CAPABILITIES: Record<PathKey, string[]> = {
   ],
 };
 
+// ── "How this HMD path helps" panel ──────────────────────────────────────────
+
+const PRODUCT_DESCRIPTION: Record<PathKey, string> = {
+  protected: "HMD Fuse is designed for a protected first-smartphone start, with parent-managed app access, trusted contacts, and HarmBlock+ for content filtering support.",
+  guided:    "HMD Fusion X1 supports growing independence — with tools for app management, screen-time control, and gradual expansion of access as trust develops.",
+  flexible:  "Standard HMD smartphones provide digital wellbeing tools and parental controls your family can configure to reinforce agreed boundaries.",
+};
+
+const PRODUCT_FEATURES: Record<PathKey, string[]> = {
+  protected: [
+    "HarmBlock+ may help reduce exposure to nude and sexual imagery",
+    "Starts without unrestricted app access",
+    "Guardian-managed app permissions",
+    "Trusted contacts — controls who can call or message",
+    "Gradual independence model — access can be expanded over time",
+  ],
+  guided: [
+    "App management controls — parent sets which apps are available",
+    "Screen-time support and school mode",
+    "Trusted contacts setup",
+    "Location features for family visibility",
+    "Gradual independence as trust develops",
+  ],
+  flexible: [
+    "Digital wellbeing tools included",
+    "Screen time management available",
+    "Family location features",
+    "Parental controls configurable",
+    "Open app access with family-agreed rules",
+  ],
+};
+
+interface HmdPathHelpProps {
+  result: AssessmentResponse;
+  summary: FormSummary | null;
+}
+
+export function HmdPathHelpContent({ result, summary }: HmdPathHelpProps) {
+  const pathKey = derivePathKey(result, summary);
+  const product = PATH_CONFIG[pathKey].product;
+  const description = PRODUCT_DESCRIPTION[pathKey];
+  const features = PRODUCT_FEATURES[pathKey];
+
+  return (
+    <div className="space-y-4 pt-2">
+      <div className="flex items-center gap-3">
+        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-hmd-blue/10 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#0057B8" strokeWidth="2" className="w-4 h-4">
+            <path strokeLinecap="round" strokeLinejoin="round"
+              d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+          </svg>
+        </div>
+        <p className="text-sm font-semibold text-gray-900">{product}</p>
+      </div>
+      <p className="text-sm text-gray-600 leading-relaxed">{description}</p>
+      <div className="space-y-2">
+        {features.map((feat, i) => (
+          <div key={i} className="flex items-start gap-2.5 p-3 rounded-xl bg-gray-50 border border-gray-100">
+            <span className="text-hmd-blue font-bold text-xs flex-shrink-0 mt-0.5">✓</span>
+            <span className="text-sm text-gray-700 leading-relaxed">{feat}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ── Smartphone comparison panel ───────────────────────────────────────────────
+
 interface ComparisonPanelProps {
   result: AssessmentResponse;
   summary: FormSummary | null;
