@@ -141,22 +141,22 @@ function isStepValid(key: StepKey, form: FormData, extra: ExtraAnswers): boolean
 // ── Advisor content ───────────────────────────────────────────────────────────
 
 const STEP_INTRO: Partial<Record<StepKey, string>> = {
-  age:              "Let's start with your child's age. This helps calibrate how much structure and guidance will feel right.",
-  first_smartphone: "Next — understanding whether this is a completely new step helps shape the safer-start approach.",
-  main_use:         "Different uses create different safety needs. Select everything that applies.",
-  concern:          "Most parents carry one worry above the others. What concerns you most right now?",
-  confidence:       "Last required question. This isn't a test — it helps make the plan practical.",
-  social_followup:  "One more thing about social media — it helps make the strategy more specific.",
-  games_followup:   "A quick check on gaming — this shapes how much structure around screen time to include.",
-  confidence_followup: "One last thing that could make the first week easier.",
+  age:              "Let me start with your child's age — this shapes how much structure and guidance will feel right.",
+  first_smartphone: "This changes the whole approach. A first smartphone and an upgrade are two different conversations.",
+  main_use:         "Different uses bring different safety needs. Choose everything that applies.",
+  concern:          "Most parents have one worry that sits above the others. What is it for your family?",
+  confidence:       "This isn't a test — it helps build a plan that actually works for where your family is right now.",
+  social_followup:  "One more thing about social media — it helps focus the strategy on the right risk.",
+  games_followup:   "A quick check on gaming — this shapes how much screen-time structure to include in the plan.",
+  confidence_followup: "One last thing that could make the first week go more smoothly.",
 };
 
 const STEP_QUESTION: Partial<Record<StepKey, string>> = {
   age:              "How old is your child?",
-  first_smartphone: "Would this be their first smartphone?",
-  main_use:         "What would they mostly use it for?",
+  first_smartphone: "Is this a first smartphone or an upgrade?",
+  main_use:         "What will the phone mostly be used for?",
   concern:          "What's your biggest concern?",
-  confidence:       "How confident do you feel about managing their first smartphone?",
+  confidence:       "How confident do you feel about setting up their first smartphone?",
   social_followup:  "What concerns you most about social media?",
   games_followup:   "Does your child usually stop gaming without reminders?",
   confidence_followup: "Would a simple first-week setup plan be helpful?",
@@ -211,8 +211,11 @@ function getAnswerLabel(key: StepKey, form: FormData, extra: ExtraAnswers): stri
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 function getDynamicQuestion(key: StepKey, form: FormData): string {
-  if (key === "confidence" && form.first_smartphone === false) {
-    return "How confident do you feel about your family's current smartphone habits?";
+  if (key === "confidence") {
+    if (form.first_smartphone === false) {
+      return "How confident do you feel about improving your family's current phone habits?";
+    }
+    return "How confident do you feel about setting up their first smartphone?";
   }
   return STEP_QUESTION[key] ?? "";
 }
@@ -282,9 +285,7 @@ export default function AssessmentForm({ onComplete, onBack }: AssessmentFormPro
   const progress = Math.round(((stepIdx + 1) / steps.length) * 100);
 
   useEffect(() => {
-    const el = bottomRef.current;
-    if (!el) return;
-    const id = setTimeout(() => el.scrollIntoView({ behavior: "smooth", block: "start" }), 80);
+    const id = setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 80);
     return () => clearTimeout(id);
   }, [stepIdx]);
 
@@ -376,8 +377,8 @@ export default function AssessmentForm({ onComplete, onBack }: AssessmentFormPro
         return (
           <div className="space-y-2">
             {[
-              { label: "Yes, this would be their first smartphone", value: true },
-              { label: "No, they have had one before", value: false },
+              { label: "First smartphone", value: true },
+              { label: "They already have one", value: false },
             ].map((opt) => (
               <button key={String(opt.value)} className={btn(form.first_smartphone === opt.value)} onClick={() => {
                 const nf = { ...form, first_smartphone: opt.value };
@@ -572,8 +573,6 @@ export default function AssessmentForm({ onComplete, onBack }: AssessmentFormPro
 
   // ── Render ─────────────────────────────────────────────────────────────────
 
-  const completedSteps = steps.slice(0, stepIdx).filter((k) => k !== "ready_check");
-
   return (
     <div className="min-h-screen flex flex-col bg-white">
 
@@ -645,77 +644,81 @@ export default function AssessmentForm({ onComplete, onBack }: AssessmentFormPro
         </div>
       </div>
 
-      {/* Conversation thread */}
-      <div className="px-5 py-8 max-w-md mx-auto w-full pb-20">
-        <div className="space-y-8">
+      {/* Question screen */}
+      <div className="flex-1 px-5 pt-8 pb-24 max-w-md mx-auto w-full">
+        <div ref={bottomRef} className="space-y-6">
 
-          {/* Completed Q&A pairs */}
-          {completedSteps.map((key) => (
-            <div key={key} className="space-y-2">
-              <div className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-hmd-teal flex-shrink-0 mt-1.5" />
-                <p className="text-sm text-gray-400">{getDynamicQuestion(key, form)}</p>
-              </div>
-              <div className="flex justify-end">
-                <span className="inline-block bg-hmd-blue text-white text-sm font-medium px-4 py-2 rounded-2xl rounded-tr-sm max-w-[80%] text-right leading-snug">
-                  {getAnswerLabel(key, form, extra)}
-                </span>
-              </div>
-              <div className="pl-5">
-                <p className="text-xs text-gray-400 italic leading-relaxed">{getReaction(key, form)}</p>
-              </div>
-            </div>
-          ))}
-
-          {/* Snapshot — after first answer */}
-          {stepIdx > 0 && renderSnapshot()}
-
-          {/* Active step */}
-          <div ref={bottomRef} className="space-y-4">
-            {isCustom ? (
-              renderStep()
-            ) : (
-              <>
-                {getDynamicIntro(stepKey, form) && (
-                  <div className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-hmd-teal flex-shrink-0 mt-1.5" />
-                    <p className="text-sm text-gray-500 italic leading-relaxed">{getDynamicIntro(stepKey, form)}</p>
+          {isCustom ? (
+            renderStep()
+          ) : (
+            <>
+              {/* Advisor intro card */}
+              {getDynamicIntro(stepKey, form) && (
+                <div className="flex gap-3">
+                  <div className="flex-shrink-0 w-7 h-7 rounded-full bg-hmd-teal/10 border border-hmd-teal/20 flex items-center justify-center">
+                    <span className="text-[9px] font-bold text-hmd-teal">TB</span>
                   </div>
-                )}
-
-                {stepKey === "age" && (
-                  <div className="px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl">
-                    <p className="text-xs text-gray-400 leading-relaxed">
-                      No child name, email or account needed. Your answers are used only to create this readiness snapshot.
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[10px] font-bold text-hmd-teal uppercase tracking-widest mb-1.5">
+                      TrustBridge advisor
                     </p>
+                    <div className="bg-gray-50 rounded-2xl rounded-tl-sm border border-gray-100 px-4 py-3">
+                      <p className="text-sm text-gray-600 leading-relaxed">{getDynamicIntro(stepKey, form)}</p>
+                    </div>
                   </div>
-                )}
+                </div>
+              )}
 
-                <h2 className="text-xl font-bold text-gray-900">{getDynamicQuestion(stepKey, form)}</h2>
+              {/* Privacy note on first step */}
+              {stepKey === "age" && (
+                <div className="flex items-center gap-2">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+                    className="w-3.5 h-3.5 text-gray-400 flex-shrink-0">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  <p className="text-xs text-gray-400">
+                    No child name or account needed. Used only to build your family phone plan.
+                  </p>
+                </div>
+              )}
 
-                {renderStep()}
+              {/* Question */}
+              <h2 className="text-2xl font-bold text-gray-900 leading-tight">
+                {getDynamicQuestion(stepKey, form)}
+              </h2>
 
-                {error && (
-                  <div className="p-4 bg-red-50 border border-red-100 rounded-xl">
-                    <p className="text-sm text-red-700">{error}</p>
-                    <button onClick={() => handleSubmitWith(form)} className="mt-2 text-sm font-semibold text-red-700 underline">
-                      Try again
-                    </button>
-                  </div>
-                )}
+              {/* Answer options */}
+              {renderStep()}
 
-                {(isMultiSelect || isLast) && (
-                  <button
-                    onClick={handleNext}
-                    disabled={!valid || loading}
-                    className={`tb-btn-primary ${!valid || loading ? "opacity-40 cursor-not-allowed" : ""}`}
-                  >
-                    {isLast ? "Build my family plan" : "Continue"}
+              {/* Error */}
+              {error && (
+                <div className="p-4 bg-red-50 border border-red-100 rounded-xl">
+                  <p className="text-sm text-red-700">{error}</p>
+                  <button onClick={() => handleSubmitWith(form)} className="mt-2 text-sm font-semibold text-red-700 underline">
+                    Try again
                   </button>
-                )}
-              </>
-            )}
-          </div>
+                </div>
+              )}
+
+              {/* Continue / submit */}
+              {(isMultiSelect || isLast) && (
+                <button
+                  onClick={handleNext}
+                  disabled={!valid || loading}
+                  className={`tb-btn-primary ${!valid || loading ? "opacity-40 cursor-not-allowed" : ""}`}
+                >
+                  {isLast
+                    ? "Build my family plan"
+                    : isMultiSelect && form.main_use.length > 0
+                    ? `Continue with ${form.main_use.length} choice${form.main_use.length > 1 ? "s" : ""}`
+                    : "Continue"}
+                </button>
+              )}
+            </>
+          )}
+
+          {/* Your answers so far — collapsed, shown after first step */}
+          {stepIdx > 0 && !isCustom && renderSnapshot()}
 
         </div>
       </div>

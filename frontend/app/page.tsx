@@ -212,38 +212,52 @@ export default function Home() {
     return (
       <main className="min-h-screen bg-white flex flex-col">
 
-        {/* Above fold — spacious, single focus */}
-        <div className="flex-1 flex flex-col items-center justify-center px-6 py-20 text-center bg-gradient-to-b from-teal-50/50 to-white">
-          <div className="max-w-sm w-full mx-auto space-y-6">
+        {/* Above fold */}
+        <div className="flex-1 flex flex-col items-center justify-center px-6 py-14 text-center">
+          <div className="max-w-sm w-full mx-auto">
 
-            <span className="inline-block text-xs font-bold tracking-widest text-hmd-teal uppercase">
+            <span className="inline-block text-xs font-bold tracking-widest text-hmd-teal uppercase mb-7">
               HMD TrustBridge
             </span>
 
-            <h1 className="text-3xl font-bold text-gray-900 leading-tight tracking-tight">
-              Helping your child build<br />
-              <span className="text-hmd-teal">healthy phone habits</span>
+            <h1 className="text-[2rem] font-bold text-gray-900 leading-tight tracking-tight mb-4">
+              Find the safer smartphone path<br />
+              <span className="text-hmd-teal">for your family</span>
             </h1>
 
-            <p className="text-gray-500 text-sm leading-relaxed max-w-xs mx-auto">
-              A short guided conversation to help your family make safer, more confident smartphone decisions.
+            <p className="text-gray-600 text-[0.95rem] leading-relaxed max-w-xs mx-auto mb-8">
+              A 60-second guided check to help your child build healthy phone habits — without over-control.
             </p>
 
-            <p className="text-xs text-gray-400">
-              No child name, email or account needed.
-            </p>
-
-            <div className="pt-2 space-y-3">
+            <div className="space-y-4">
               <button
                 onClick={() => setAppState("assessing")}
                 className="tb-btn-primary"
               >
-                Start the conversation
+                Build my family phone plan
               </button>
 
               <p className="text-xs text-gray-400">
-                Under 60 seconds &middot; Parent-first &middot; Research-informed
+                No child name needed · Parent-first · Research-informed
               </p>
+
+              {/* Outcome preview */}
+              <div className="flex flex-wrap items-center justify-center gap-1.5 pt-1">
+                <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest mr-0.5">
+                  You&rsquo;ll get:
+                </span>
+                <span className="bg-gray-100 text-gray-600 text-xs px-2.5 py-1 rounded-full font-medium">
+                  Family Profile
+                </span>
+                <span className="text-gray-300 text-xs">·</span>
+                <span className="bg-gray-100 text-gray-600 text-xs px-2.5 py-1 rounded-full font-medium">
+                  Main Challenge
+                </span>
+                <span className="text-gray-300 text-xs">·</span>
+                <span className="bg-blue-50 text-hmd-blue text-xs px-2.5 py-1 rounded-full font-medium">
+                  HMD Path
+                </span>
+              </div>
             </div>
 
           </div>

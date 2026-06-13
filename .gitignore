@@ -12,3 +12,4 @@ build/
 *.log
 n8n_data/
 frontend/tsconfig.tsbuildinfo
+frontend/tsconfig.tsbuildinfo

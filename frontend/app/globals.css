@@ -36,13 +36,12 @@ body {
 
   /* Premium option card used in assessment */
   .tb-option {
-    @apply w-full text-left px-5 py-4 rounded-2xl border border-gray-100 bg-white
+    @apply w-full text-left px-5 py-4 rounded-2xl border-2 border-gray-200 bg-white
            text-gray-800 font-medium text-sm cursor-pointer transition-all
-           shadow-[0_1px_4px_rgba(0,0,0,0.06)]
-           hover:border-hmd-blue/40 hover:shadow-md;
+           hover:border-hmd-blue hover:bg-blue-50/40;
   }
 
   .tb-option-selected {
-    @apply border-hmd-blue bg-blue-50 text-hmd-blue shadow-none;
+    @apply border-hmd-blue bg-blue-50 text-hmd-blue font-semibold;
   }
 }
