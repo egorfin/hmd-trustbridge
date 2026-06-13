@@ -38,6 +38,7 @@ export type AssessmentResponse = {
 };
 
 export type FormSummary = {
+  childAge: number;
   ageLabel: string;
   isFirstSmartphone: boolean | null;
   mainConcernKey: string;

@@ -202,6 +202,20 @@ function getAnswerLabel(key: StepKey, form: FormData, extra: ExtraAnswers): stri
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
+function getDynamicQuestion(key: StepKey, form: FormData): string {
+  if (key === "confidence" && form.first_smartphone === false) {
+    return "How confident do you feel about your family's current smartphone habits?";
+  }
+  return STEP_QUESTION[key] ?? "";
+}
+
+function getDynamicIntro(key: StepKey, form: FormData): string {
+  if (key === "confidence" && form.first_smartphone === false) {
+    return "This helps shape a plan that fits how your family currently uses smartphones.";
+  }
+  return STEP_INTRO[key] ?? "";
+}
+
 function toggleMulti(arr: string[], value: string): string[] {
   return arr.includes(value) ? arr.filter((v) => v !== value) : [...arr, value];
 }
@@ -218,6 +232,7 @@ function buildFormSummary(f: FormData): FormSummary {
   const concernOption = CONCERN_OPTIONS.find((o) => o.value === f.main_concerns[0]);
   const confidenceOption = CONFIDENCE_OPTIONS.find((o) => o.value === f.parent_confidence_before);
   return {
+    childAge: f.child_age,
     ageLabel: ageGroup ? `${ageGroup.label} years` : "",
     isFirstSmartphone: f.first_smartphone,
     mainConcernKey: f.main_concerns[0] ?? "",
@@ -598,7 +613,7 @@ export default function AssessmentForm({ onComplete, onBack }: AssessmentFormPro
             <div key={key} className="space-y-2">
               <div className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-hmd-teal flex-shrink-0 mt-1.5" />
-                <p className="text-sm text-gray-400">{STEP_QUESTION[key]}</p>
+                <p className="text-sm text-gray-400">{getDynamicQuestion(key, form)}</p>
               </div>
               <div className="flex justify-end">
                 <span className="inline-block bg-hmd-blue text-white text-sm font-medium px-4 py-2 rounded-2xl rounded-tr-sm max-w-[80%] text-right leading-snug">
@@ -620,10 +635,10 @@ export default function AssessmentForm({ onComplete, onBack }: AssessmentFormPro
               renderStep()
             ) : (
               <>
-                {STEP_INTRO[stepKey] && (
+                {getDynamicIntro(stepKey, form) && (
                   <div className="flex items-start gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-hmd-teal flex-shrink-0 mt-1.5" />
-                    <p className="text-sm text-gray-500 italic leading-relaxed">{STEP_INTRO[stepKey]}</p>
+                    <p className="text-sm text-gray-500 italic leading-relaxed">{getDynamicIntro(stepKey, form)}</p>
                   </div>
                 )}
 
@@ -635,7 +650,7 @@ export default function AssessmentForm({ onComplete, onBack }: AssessmentFormPro
                   </div>
                 )}
 
-                <h2 className="text-xl font-bold text-gray-900">{STEP_QUESTION[stepKey]}</h2>
+                <h2 className="text-xl font-bold text-gray-900">{getDynamicQuestion(stepKey, form)}</h2>
 
                 {renderStep()}
 

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import AssessmentForm from "@/components/AssessmentForm";
 import ReadinessScore from "@/components/ReadinessScore";
-import FuseSection from "@/components/FuseSection";
+import HmdPathSection, { getHmdPathCtaUrl } from "@/components/HmdPathSection";
 import PhoneAgreement from "@/components/PhoneAgreement";
 import FirstWeekPlan from "@/components/FirstWeekPlan";
 import PhoneComparison from "@/components/PhoneComparison";
@@ -22,20 +22,79 @@ const HABIT_MAP: Record<string, { title: string; description: string }> = {
   privacy:         { title: "Digital Privacy",       description: "Protecting personal information and understanding what stays private." },
 };
 
-const RESEARCH_INSIGHTS = [
+type ResearchInsight = {
+  stat: string;
+  source: string;
+  minAge?: number;
+  maxAge?: number;
+  concerns?: string[];
+  requiresFirst?: boolean;
+  requiresExisting?: boolean;
+};
+
+const RESEARCH_INSIGHTS_POOL: ResearchInsight[] = [
   {
     stat: "51% of children report being contacted online by strangers.",
     source: "HMD Better Phone Research",
+    concerns: ["strangers", "harmful_content"],
+    maxAge: 15,
   },
   {
     stat: "THL Finland recommends delaying personal smartphones until later childhood where possible.",
     source: "THL Finland",
+    maxAge: 12,
+    requiresFirst: true,
   },
   {
-    stat: "Age-appropriate digital habits established early are linked to better online safety outcomes.",
+    stat: "Family agreements about smartphone use have a greater impact on wellbeing than device controls alone.",
+    source: "HMD Better Phone Project",
+  },
+  {
+    stat: "Age-appropriate digital habits established early are linked to better long-term online safety.",
     source: "EU Better Internet for Kids",
+    maxAge: 14,
+  },
+  {
+    stat: "Teenagers who regularly discuss online safety with parents report fewer negative online experiences.",
+    source: "Save the Children Finland",
+    minAge: 13,
+  },
+  {
+    stat: "Screen time agreements made together with children are more effective than imposed limits.",
+    source: "HMD Better Phone Research",
+    concerns: ["screen_time"],
+  },
+  {
+    stat: "Digital independence developed gradually leads to better self-regulation in young people.",
+    source: "EU Better Internet for Kids",
+    minAge: 11,
+  },
+  {
+    stat: "Children with established digital habits benefit most from clear family communication rather than new restrictions.",
+    source: "HMD Better Phone Research",
+    requiresExisting: true,
   },
 ];
+
+function selectInsights(summary: FormSummary | null, n = 3): ResearchInsight[] {
+  const age = summary?.childAge ?? 0;
+  const concern = summary?.mainConcernKey ?? "";
+  const isFirst = summary?.isFirstSmartphone;
+
+  const candidates = RESEARCH_INSIGHTS_POOL.filter((i) => {
+    if (age > 0) {
+      if (i.minAge != null && age < i.minAge) return false;
+      if (i.maxAge != null && age > i.maxAge) return false;
+    }
+    if (i.requiresFirst && isFirst !== true) return false;
+    if (i.requiresExisting && isFirst !== false) return false;
+    return true;
+  });
+
+  const concernMatch = candidates.filter((i) => i.concerns?.includes(concern));
+  const others = candidates.filter((i) => !i.concerns?.includes(concern));
+  return [...concernMatch, ...others].slice(0, n);
+}
 
 // ── Expandable section ────────────────────────────────────────────────────────
 function ExpandableSection({
@@ -74,6 +133,11 @@ function topRisks(risks: RiskItem[], n = 5): RiskItem[] {
 
 function topDrivers(drivers: ScoreDriver[], n = 3): ScoreDriver[] {
   return [...drivers].sort((a, b) => Math.abs(b.impact) - Math.abs(a.impact)).slice(0, n);
+}
+
+function firstSentence(text: string): string {
+  const m = text.match(/^[^.!?]+[.!?]/);
+  return m ? m[0].trim() : text;
 }
 
 function deriveHabits(risks: RiskItem[]): { title: string; description: string }[] {
@@ -260,6 +324,18 @@ export default function Home() {
   const noticeDrivers = topDrivers(result.score_drivers, 3);
   const conversationStarter = report?.suggested_parent_child_conversation ?? null;
 
+  // Personalization context
+  const childAge = formSummary?.childAge ?? 0;
+  const isFirstSmartphone = formSummary?.isFirstSmartphone;
+  const isOlderTeen = childAge >= 16;
+  const planHeader =
+    isFirstSmartphone === false
+      ? "Building Better Digital Habits"
+      : isOlderTeen
+      ? "Steps Towards Greater Independence"
+      : "First Steps For Your Family";
+  const selectedInsights = selectInsights(formSummary);
+
   return (
     <main className="min-h-screen pb-16 bg-white">
 
@@ -316,10 +392,16 @@ export default function Home() {
           </div>
         )}
 
-        {/* 4 — First Steps For Your Family */}
+        {/* 4 — Action plan */}
         {planItems.length > 0 && (
           <div className="tb-card space-y-3">
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest">First Steps For Your Family</p>
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest">{planHeader}</p>
+            {isFirstSmartphone === false && (
+              <p className="text-xs text-gray-500 italic">Focused on strengthening existing digital habits rather than starting from scratch.</p>
+            )}
+            {isOlderTeen && isFirstSmartphone !== false && (
+              <p className="text-xs text-gray-500 italic">Focused on building responsible independence, not restriction.</p>
+            )}
             <div className="space-y-2">
               {planItems.map((item, i) => (
                 <div key={i} className="flex gap-3 items-start p-3 bg-gray-50 rounded-xl">
@@ -336,45 +418,50 @@ export default function Home() {
         {/* 5 — Conversation Starter */}
         {conversationStarter && (
           <div className="tb-card border-l-4 border-hmd-teal bg-teal-50/30 space-y-2">
-            <p className="text-xs font-semibold text-hmd-teal uppercase tracking-widest">One Conversation Starter</p>
-            <p className="text-sm text-gray-700 italic leading-relaxed">&ldquo;{conversationStarter}&rdquo;</p>
+            <p className="text-xs font-semibold text-hmd-teal uppercase tracking-widest">
+              {isOlderTeen ? "A Question Worth Discussing" : "One Conversation Starter"}
+            </p>
+            <p className="text-sm text-gray-700 italic leading-relaxed">&ldquo;{firstSentence(conversationStarter)}&rdquo;</p>
           </div>
         )}
 
-        {/* 6 — Why HMD Fuse May Fit Your Family */}
-        <FuseSection result={result} summary={formSummary} />
+        {/* 6 — Your Recommended HMD Path */}
+        <HmdPathSection result={result} summary={formSummary} />
 
         {/* 7 — CTA */}
         <div className="pt-1 pb-2 space-y-3">
           <a
-            href="https://www.hmd.com/fuse"
+            href={getHmdPathCtaUrl(result, formSummary)}
             target="_blank"
             rel="noopener noreferrer"
             className="tb-btn-primary inline-block text-center"
           >
-            Continue with HMD Fuse
+            Explore Your Recommended HMD Path
           </a>
           <p className="text-xs text-gray-400 text-center leading-relaxed">
-            HMD Fuse is designed to support a safer first-phone experience.
-            It does not guarantee protection.
+            TrustBridge recommends an approach, not just a device. The right conversations will always matter most.
           </p>
         </div>
 
         {/* 8 — Helpful tools */}
         <div className="pt-2">
           <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3 px-1">
-            Helpful tools for your family
+            {isFirstSmartphone === false ? "Resources for your family" : "Helpful tools for your family"}
           </p>
           <div className="space-y-2">
             <ExpandableSection title="Family Phone Agreement">
               <PhoneAgreement />
             </ExpandableSection>
-            <ExpandableSection title="First Week Safety Plan">
-              <FirstWeekPlan />
-            </ExpandableSection>
-            <ExpandableSection title="Choosing the right first-phone path">
-              <PhoneComparison />
-            </ExpandableSection>
+            {isFirstSmartphone !== false && (
+              <ExpandableSection title="First Week Safety Plan">
+                <FirstWeekPlan />
+              </ExpandableSection>
+            )}
+            {isFirstSmartphone !== false && (
+              <ExpandableSection title="Choosing the right first-phone path">
+                <PhoneComparison />
+              </ExpandableSection>
+            )}
           </div>
         </div>
 
@@ -384,7 +471,7 @@ export default function Home() {
             Research Insights
           </p>
           <div className="space-y-2">
-            {RESEARCH_INSIGHTS.map((insight, i) => (
+            {selectedInsights.map((insight, i) => (
               <div key={i} className="border border-gray-100 rounded-2xl p-4 bg-gray-50">
                 <p className="text-sm text-gray-700 leading-relaxed mb-2">{insight.stat}</p>
                 <p className="text-xs text-gray-400">Source: {insight.source}</p>
