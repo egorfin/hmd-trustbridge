@@ -29,7 +29,7 @@ export default function RiskProfile({ risks }: RiskProfileProps) {
 
   return (
     <div className="tb-card">
-      <h2 className="text-base font-semibold text-gray-800 mb-4">Key risk areas to keep in mind</h2>
+      <h2 className="text-base font-semibold text-gray-800 mb-4">Key risk areas</h2>
       <div className="space-y-3">
         {risks.map((risk) => {
           const config = SEVERITY_CONFIG[risk.severity] ?? SEVERITY_CONFIG.medium;

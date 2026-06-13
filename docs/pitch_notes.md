@@ -11,6 +11,7 @@ TrustBridge: Concern → Assessment → Trust → Strategy → Earned Recommenda
 
 1. **Not a sales tool** — the recommendation is earned, not assumed
 2. **Explainable AI** — score is deterministic, LLM explains, not decides
+3. **No grading the child** — the system uses deterministic scoring internally, but parents see a readiness path, not a judgement score
 3. **Privacy-first** — no child profiles stored
 4. **60-90 seconds** — fits a retail moment
 

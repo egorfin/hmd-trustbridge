@@ -17,13 +17,13 @@ export default function FuseRecommendation({ text }: FuseRecommendationProps) {
         </div>
         <div>
           <p className="text-xs font-semibold text-hmd-teal uppercase tracking-widest">
-            Why HMD Fuse fits this strategy
+            Why HMD Fuse fits this path
           </p>
         </div>
       </div>
       <p className="text-sm text-gray-700 leading-relaxed">{text}</p>
       <p className="text-xs text-gray-400 mt-3">
-        Recommendation based on your assessment answers.
+        HMD Fuse may be worth considering as part of your family&rsquo;s safer-start approach.
       </p>
     </div>
   );
