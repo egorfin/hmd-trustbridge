@@ -3,8 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import ProgressBar from "./ProgressBar";
 import { AssessmentResponse, FormData, FormSummary } from "@/lib/types";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
+import { computeAssessment } from "@/lib/clientScoring";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -295,35 +294,15 @@ export default function AssessmentForm({ onComplete, onBack }: AssessmentFormPro
     return () => clearInterval(id);
   }, [loading]);
 
-  // ── API call ───────────────────────────────────────────────────────────────
+  // ── Client-side scoring (no backend required) ─────────────────────────────
 
   async function handleSubmitWith(f: FormData) {
     setLoading(true);
     setError(null);
-    try {
-      const res = await fetch(`${API_BASE}/api/assessment`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          child_age: f.child_age,
-          first_smartphone: f.first_smartphone!,
-          main_use: f.main_use,
-          existing_apps: f.existing_apps,
-          main_concerns: f.main_concerns,
-          independence_level: deriveIndependenceLevel(f.child_age),
-          parent_confidence_before: f.parent_confidence_before,
-          country: "Finland",
-          language: "en",
-          debug: false,
-        }),
-      });
-      if (!res.ok) throw new Error(`Server error ${res.status}`);
-      const data: AssessmentResponse = await res.json();
-      onComplete(data, buildFormSummary(f));
-    } catch {
-      setError("Something went wrong. Please try again.");
-      setLoading(false);
-    }
+    // Show the "Advisor Thinking" animation for a natural duration
+    await new Promise<void>((resolve) => setTimeout(resolve, 2800));
+    const data: AssessmentResponse = computeAssessment(f);
+    onComplete(data, buildFormSummary(f));
   }
 
   function handleNext() {
