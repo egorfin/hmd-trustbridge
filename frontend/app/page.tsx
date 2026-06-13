@@ -84,6 +84,28 @@ const RESEARCH_INSIGHTS_POOL: ResearchInsight[] = [
   },
 ];
 
+const PATH_APPROACH_LABEL: Record<string, string> = {
+  protected: "Protected Start",
+  guided:    "Guided Independence",
+  flexible:  "Flexible Boundaries",
+};
+
+const HERO_SUBTITLE: Record<string, string> = {
+  protected: "Based on your answers, TrustBridge suggests a protected start — with clear boundaries from day one.",
+  guided:    "Based on your answers, TrustBridge suggests a guided path — building independence with the right tools in place.",
+  flexible:  "Based on your answers, TrustBridge suggests a flexible approach — your child is ready for some independence with agreed rules.",
+};
+
+const QUICK_STEPS: Record<string, [string, string, string]> = {
+  strangers:       ["Agree who your child can contact", "Set screen-free evening time", "Talk about what to do if a stranger messages them"],
+  screen_time:     ["Set daily screen-time limits before the phone arrives", "Create phone-free zones together", "Agree on a nightly phone handover time"],
+  harmful_content: ["Set up content filters before handing over the phone", "Talk about what to do if they see something upsetting", "Agree on which apps are allowed from the start"],
+  cyberbullying:   ["Talk openly about what online unkindness looks like", "Agree they can always come to you without judgment", "Set up trusted contacts before adding school friends"],
+  social_pressure: ["Agree on which social apps are allowed at the start", "Talk about what to do when friends pressure them online", "Set screen-free evening time to protect daily downtime"],
+  privacy:         ["Talk about what personal information should stay private", "Agree on which apps are allowed and why", "Review privacy settings together on day one"],
+  not_sure:        ["Have one safety conversation before the phone arrives", "Agree on screen-free times and zones together", "Set up trusted contacts as your starting point"],
+};
+
 function selectInsights(summary: FormSummary | null, n = 3): ResearchInsight[] {
   const age = summary?.childAge ?? 0;
   const concern = summary?.mainConcernKey ?? "";
@@ -159,16 +181,16 @@ function Accordion({
 }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className={`rounded-2xl border bg-white transition-colors ${open ? "border-gray-200" : "border-gray-100"}`}>
+    <div className={`rounded-2xl bg-white transition-all ${open ? "border border-gray-200 shadow-md" : "border border-gray-100 shadow-sm"}`}>
       <button
         onClick={() => setOpen((o) => !o)}
-        className="w-full flex items-center justify-between px-5 py-4 text-left"
+        className="w-full flex items-center justify-between px-5 py-5 text-left"
         aria-expanded={open}
       >
         <div className="flex-1 min-w-0 pr-4">
           <p className="text-sm font-semibold text-gray-900">{title}</p>
           {hint && !open && (
-            <p className="text-xs text-gray-400 mt-0.5 leading-relaxed">{hint}</p>
+            <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{hint}</p>
           )}
         </div>
         <svg
@@ -179,7 +201,7 @@ function Accordion({
         </svg>
       </button>
       {open && (
-        <div className="px-5 pb-5 pt-1 border-t border-gray-50">
+        <div className="px-5 pb-6 pt-2 border-t border-gray-100">
           {children}
         </div>
       )}
@@ -222,7 +244,7 @@ export default function Home() {
 
             <h1 className="text-[2rem] font-bold text-gray-900 leading-tight tracking-tight mb-4">
               Find the safer smartphone path<br />
-              <span className="text-hmd-teal">for your family</span>
+              <span className="text-hmd-teal">for your child</span>
             </h1>
 
             <p className="text-gray-600 text-[0.95rem] leading-relaxed max-w-xs mx-auto mb-8">
@@ -234,7 +256,7 @@ export default function Home() {
                 onClick={() => setAppState("assessing")}
                 className="tb-btn-primary"
               >
-                Build my family phone plan
+                Check my child&rsquo;s phone readiness
               </button>
 
               <p className="text-xs text-gray-400">
@@ -247,7 +269,7 @@ export default function Home() {
                   You&rsquo;ll get:
                 </span>
                 <span className="bg-gray-100 text-gray-600 text-xs px-2.5 py-1 rounded-full font-medium">
-                  Family Profile
+                  Child Profile
                 </span>
                 <span className="text-gray-300 text-xs">·</span>
                 <span className="bg-gray-100 text-gray-600 text-xs px-2.5 py-1 rounded-full font-medium">
@@ -347,7 +369,7 @@ export default function Home() {
       ? "Building Better Digital Habits"
       : isOlderTeen
       ? "Steps Towards Greater Independence"
-      : "First Steps For Your Family";
+      : "First Steps With Your Child";
 
   // Dashboard card data
   const familyProfile = getFamilyProfile(result, formSummary);
@@ -368,73 +390,81 @@ export default function Home() {
   });
 
   return (
-    <main className="min-h-screen pb-16 bg-white">
+    <main className="min-h-screen pb-16" style={{background: 'radial-gradient(ellipse 120% 35% at 50% 0%, rgba(0, 169, 157, 0.07) 0%, transparent 55%), linear-gradient(180deg, #EEF5FF 0%, #FFFFFF 45%)'}}>
 
       {/* Sticky header */}
       <div className="px-5 pt-6 pb-4 border-b border-gray-100 bg-white/80 backdrop-blur-sm sticky top-0 z-10">
-        <div className="max-w-lg mx-auto flex items-center justify-between">
+        <div className="max-w-3xl mx-auto flex items-center justify-between">
           <span className="text-xs font-bold tracking-widest text-hmd-teal uppercase">HMD TrustBridge</span>
-          <span className="text-xs text-gray-400">Your Family Plan</span>
+          <span className="text-xs text-gray-500">Your Child&rsquo;s Phone Plan</span>
         </div>
       </div>
 
-      <div className="max-w-lg mx-auto px-5 pt-6 space-y-4">
+      <div className="max-w-3xl mx-auto px-5 pt-6 space-y-5">
 
-        {/* ── Dashboard card ─────────────────────────────────────────────────── */}
-        <div className="rounded-3xl border border-gray-100 bg-gradient-to-br from-teal-50/60 via-white to-blue-50/30 p-6 space-y-5">
-
-          {/* Row 1: Family Profile + Biggest Challenge */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Family Profile</p>
-              <span className="inline-block bg-hmd-teal text-white text-xs font-bold px-3 py-1.5 rounded-full">
-                {familyProfile}
-              </span>
-            </div>
-            <div>
-              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Biggest Challenge</p>
-              <span className="inline-block bg-amber-50 border border-amber-200 text-amber-800 text-xs font-bold px-3 py-1.5 rounded-full">
-                {challengeLabel}
-              </span>
-            </div>
-          </div>
-
-          {/* Evidence for biggest challenge */}
-          {evidenceSet.challengeEvidence && (
-            <EvidenceChip item={evidenceSet.challengeEvidence} title="Why this matters" />
-          )}
-
-          <div className="h-px bg-gray-100" />
-
-          {/* Row 2: Recommended HMD Path */}
+        {/* ── Hero result card ──────────────────────────────────────────────── */}
+        <div className="rounded-3xl bg-gradient-to-br from-teal-50 via-white to-blue-50/40 border border-teal-100/50 p-7 space-y-5 shadow-sm">
           <div>
-            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Recommended HMD Path</p>
-            <span className="inline-block bg-hmd-blue/10 border border-hmd-blue/20 text-hmd-blue text-xs font-bold px-3 py-1.5 rounded-full">
-              {productName}
+            <p className="text-[10px] font-bold tracking-widest text-hmd-teal uppercase mb-2">
+              TrustBridge Result
+            </p>
+            <h2 className="text-2xl font-bold text-gray-900 leading-snug">
+              Your child&rsquo;s safer phone path
+            </h2>
+            <p className="text-sm text-gray-600 mt-2 leading-relaxed">
+              {HERO_SUBTITLE[pathKey] ?? HERO_SUBTITLE.guided}
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <span className="inline-block bg-hmd-teal text-white text-xs font-bold px-3 py-1.5 rounded-full">
+              {familyProfile}
             </span>
-            <div className="mt-2">
-              <a
-                href={ctaUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[10px] text-gray-400 hover:text-hmd-teal inline-flex items-center gap-0.5 transition-colors"
-              >
-                Source: hmd.com
-                <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-2.5 h-2.5 ml-0.5">
-                  <path d="M1 11L11 1M11 1H4.5M11 1V7.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </a>
-            </div>
+            <span className="inline-block bg-amber-50 border border-amber-200 text-amber-800 text-xs font-bold px-3 py-1.5 rounded-full">
+              {challengeLabel}
+            </span>
+            <span className="inline-block bg-hmd-blue/10 border border-hmd-blue/20 text-hmd-blue text-xs font-bold px-3 py-1.5 rounded-full">
+              {PATH_APPROACH_LABEL[pathKey] ?? pathKey}
+            </span>
           </div>
+        </div>
 
-          <div className="h-px bg-gray-100" />
+        {/* ── Evidence chip ─────────────────────────────────────────────────── */}
+        {evidenceSet.challengeEvidence && (
+          <EvidenceChip item={evidenceSet.challengeEvidence} title="Why this matters" />
+        )}
 
-          {/* Row 3: Why */}
-          <div>
-            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Why</p>
-            <p className="text-sm text-gray-700 leading-relaxed">{whySentence}</p>
+        {/* ── 3 quick steps ─────────────────────────────────────────────────── */}
+        <div className="space-y-3">
+          <p className="text-sm font-bold text-gray-900">Start with these 3 steps</p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {(QUICK_STEPS[concernKey] ?? QUICK_STEPS.not_sure).map((step, i) => (
+              <div key={i} className="flex gap-3 p-4 bg-white rounded-2xl border border-gray-100 shadow-sm">
+                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-hmd-teal text-white text-xs font-bold flex items-center justify-center">
+                  {i + 1}
+                </span>
+                <p className="text-sm text-gray-700 leading-relaxed">{step}</p>
+              </div>
+            ))}
           </div>
+        </div>
 
+        {/* ── HMD path teaser ───────────────────────────────────────────────── */}
+        <div className="flex items-center justify-between gap-4 px-5 py-4 bg-white rounded-2xl border border-gray-100 shadow-sm">
+          <div className="min-w-0">
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Suggested device path</p>
+            <p className="text-sm font-semibold text-hmd-blue">{productName}</p>
+          </div>
+          <a
+            href={ctaUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-shrink-0 text-xs font-semibold text-hmd-teal hover:underline inline-flex items-center gap-1"
+          >
+            hmd.com
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-3 h-3">
+              <path d="M1 11L11 1M11 1H4.5M11 1V7.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </a>
         </div>
 
         {/* ── CTA ───────────────────────────────────────────────────────────── */}
@@ -445,24 +475,24 @@ export default function Home() {
             rel="noopener noreferrer"
             className="tb-btn-primary inline-block text-center"
           >
-            Explore Your Recommended HMD Path
+            Explore safer HMD options for your child
           </a>
-          <p className="text-xs text-gray-400 text-center leading-relaxed">
-            TrustBridge recommends an approach, not just a device. The right conversations will always matter most.
+          <p className="text-xs text-gray-500 text-center leading-relaxed">
+            TrustBridge recommends an approach first — the device path comes after your child&rsquo;s needs are understood.
           </p>
         </div>
 
         {/* ── Divider ───────────────────────────────────────────────────────── */}
         <div className="flex items-center gap-3 py-1">
           <div className="flex-1 h-px bg-gray-100" />
-          <span className="text-xs text-gray-400">Tap to explore more</span>
+          <span className="text-xs text-gray-400">Learn more</span>
           <div className="flex-1 h-px bg-gray-100" />
         </div>
 
         {/* ── Accordion 1: Why this path? ───────────────────────────────────── */}
         <Accordion
           title="Why did TrustBridge suggest this?"
-          hint="See the factors behind your family profile and recommended approach."
+          hint="See the factors behind your child's profile and recommended approach."
         >
           <div className="space-y-4 pt-2">
 
@@ -523,38 +553,34 @@ export default function Home() {
         {/* ── Accordion 3: How this HMD path helps ─────────────────────────── */}
         <Accordion
           title="How this HMD path helps"
-          hint={`Features and design choices in ${productName} matched to your family's situation.`}
+          hint={`Features and design choices in ${productName} matched to your child's situation.`}
         >
           <HmdPathHelpContent result={result} summary={formSummary} />
         </Accordion>
 
-        {/* ── Accordion 4: Family action plan ──────────────────────────────── */}
+        {/* ── Accordion 4: Talking to your child ───────────────────────────── */}
         <Accordion
-          title="Family action plan"
-          hint="Practical steps and a conversation starter for your family."
+          title="How should I talk to my child about this?"
+          hint="Conversation starters, focus areas, and practical steps for your child."
         >
           <div className="space-y-4 pt-2">
 
-            {/* Habits */}
-            {habits.length > 0 && (
-              <div className="space-y-2">
-                <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest">Habits to focus on</p>
-                {habits.map((h, i) => (
-                  <div key={i} className="flex items-start gap-3 p-3 rounded-xl border border-gray-100">
-                    <span className="w-2 h-2 rounded-full bg-hmd-teal flex-shrink-0 mt-1.5" />
-                    <div>
-                      <p className="text-sm font-semibold text-gray-800">{h.title}</p>
-                      <p className="text-xs text-gray-500 leading-relaxed mt-0.5">{h.description}</p>
-                    </div>
-                  </div>
-                ))}
+            {/* Lead with conversation starter */}
+            {conversationStarter && (
+              <div className="border-l-4 border-hmd-teal bg-teal-50/30 rounded-r-xl p-4 space-y-1">
+                <p className="text-xs font-semibold text-hmd-teal uppercase tracking-widest">
+                  {isOlderTeen ? "A question worth asking together" : "One conversation starter"}
+                </p>
+                <p className="text-sm text-gray-700 italic leading-relaxed">
+                  &ldquo;{firstSentence(conversationStarter)}&rdquo;
+                </p>
               </div>
             )}
 
             {/* Plan steps */}
             {planItems.length > 0 && (
               <div className="space-y-2">
-                <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest">{planHeader}</p>
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest">{planHeader}</p>
                 {isFirstSmartphone === false && (
                   <p className="text-xs text-gray-500 italic">Focused on strengthening existing habits rather than starting from scratch.</p>
                 )}
@@ -572,15 +598,19 @@ export default function Home() {
               </div>
             )}
 
-            {/* Conversation starter */}
-            {conversationStarter && (
-              <div className="border-l-4 border-hmd-teal bg-teal-50/30 rounded-r-xl p-4 space-y-1">
-                <p className="text-xs font-semibold text-hmd-teal uppercase tracking-widest">
-                  {isOlderTeen ? "A question worth discussing" : "One conversation starter"}
-                </p>
-                <p className="text-sm text-gray-700 italic leading-relaxed">
-                  &ldquo;{firstSentence(conversationStarter)}&rdquo;
-                </p>
+            {/* Focus areas */}
+            {habits.length > 0 && (
+              <div className="space-y-2">
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest">Focus areas for your child</p>
+                {habits.map((h, i) => (
+                  <div key={i} className="flex items-start gap-3 p-3 rounded-xl border border-gray-100">
+                    <span className="w-2 h-2 rounded-full bg-hmd-teal flex-shrink-0 mt-1.5" />
+                    <div>
+                      <p className="text-sm font-semibold text-gray-800">{h.title}</p>
+                      <p className="text-xs text-gray-500 leading-relaxed mt-0.5">{h.description}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
 
@@ -624,8 +654,8 @@ export default function Home() {
 
         {/* ── Accordion 5: Family agreement & tools ────────────────────────── */}
         <Accordion
-          title={isFirstSmartphone === false ? "Family digital agreement" : "Family phone agreement"}
-          hint="A simple agreement to set expectations for everyone."
+          title="Your child's phone agreement"
+          hint="A simple agreement to set clear expectations with your child from day one."
         >
           <div className="space-y-4 pt-2">
             <PhoneAgreement />

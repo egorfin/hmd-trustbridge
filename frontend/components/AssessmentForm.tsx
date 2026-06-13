@@ -596,7 +596,7 @@ export default function AssessmentForm({ onComplete, onBack }: AssessmentFormPro
               {LOADING_MESSAGES[loadingMsgIdx]}
             </p>
             <p className="text-xs text-gray-400 mb-8">
-              Building your family&rsquo;s digital safety plan.
+              Building your child&rsquo;s safer phone plan.
             </p>
 
             <div className="flex items-center justify-center gap-2 mb-8">
@@ -708,7 +708,7 @@ export default function AssessmentForm({ onComplete, onBack }: AssessmentFormPro
                   className={`tb-btn-primary ${!valid || loading ? "opacity-40 cursor-not-allowed" : ""}`}
                 >
                   {isLast
-                    ? "Build my family plan"
+                    ? "See my child's phone plan"
                     : isMultiSelect && form.main_use.length > 0
                     ? `Continue with ${form.main_use.length} choice${form.main_use.length > 1 ? "s" : ""}`
                     : "Continue"}
