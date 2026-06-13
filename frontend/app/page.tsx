@@ -114,25 +114,132 @@ export default function Home() {
   // ── Landing ─────────────────────────────────────────────────────────────────
   if (appState === "landing") {
     return (
-      <main className="min-h-screen flex flex-col items-center justify-center px-5 py-12 text-center">
-        <div className="max-w-sm mx-auto">
-          <div className="mb-5">
-            <span className="text-xs font-bold tracking-widest text-hmd-teal uppercase">HMD TrustBridge</span>
+      <main className="min-h-screen bg-white">
+
+        {/* Hero — soft teal gradient wash */}
+        <div className="bg-gradient-to-b from-teal-50/60 to-white px-5 pt-14 pb-12 text-center">
+          <div className="max-w-sm mx-auto">
+
+            {/* Brand label */}
+            <span className="inline-block text-xs font-bold tracking-widest text-hmd-teal uppercase mb-6">
+              HMD TrustBridge
+            </span>
+
+            {/* Headline */}
+            <h1 className="text-[1.75rem] font-bold text-gray-900 leading-tight mb-4">
+              Helping your child build<br />healthy phone habits
+            </h1>
+
+            {/* Subheadline */}
+            <p className="text-gray-500 text-sm leading-relaxed mb-3 max-w-xs mx-auto">
+              A short guided conversation to help your family make safer, more confident smartphone decisions.
+            </p>
+
+            {/* Privacy note */}
+            <p className="text-xs text-gray-400 mb-8 leading-relaxed">
+              No child name, email or account needed.
+            </p>
+
+            {/* CTA */}
+            <button onClick={() => setAppState("assessing")} className="tb-btn-primary mb-3">
+              Start the conversation
+            </button>
+
+            {/* Footer note */}
+            <p className="text-xs text-gray-400">
+              Under 60 seconds &middot; Parent-first &middot; Research-informed
+            </p>
+
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 leading-tight mb-3">
-            Building Healthy Digital Habits Together
-          </h1>
-          <p className="text-gray-500 text-sm leading-relaxed mb-4">
-            A short guided conversation to help your family make confident smartphone decisions.
-          </p>
-          <p className="text-xs text-gray-400 mb-8 px-2 leading-relaxed">
-            No child name, email or account needed. Your answers are used only to create this family guidance snapshot.
-          </p>
-          <button onClick={() => setAppState("assessing")} className="tb-btn-primary mb-4">
-            Start the conversation
-          </button>
-          <p className="text-xs text-gray-400">Under 60 seconds &middot; Completely free</p>
         </div>
+
+        {/* Three-step path */}
+        <div className="px-8 py-8">
+          <div className="max-w-xs mx-auto">
+            <div className="flex items-start justify-between">
+
+              <div className="flex flex-col items-center gap-2 flex-1">
+                <div className="w-9 h-9 rounded-full bg-hmd-teal/10 border border-hmd-teal/20 flex items-center justify-center">
+                  <span className="w-2.5 h-2.5 rounded-full bg-hmd-teal" />
+                </div>
+                <p className="text-xs text-gray-500 text-center font-medium">Family</p>
+              </div>
+
+              <div className="flex-1 flex items-center pt-4">
+                <div className="w-full h-px bg-gradient-to-r from-hmd-teal/30 via-hmd-blue/20 to-hmd-blue/30" />
+              </div>
+
+              <div className="flex flex-col items-center gap-2 flex-1">
+                <div className="w-9 h-9 rounded-full bg-hmd-blue/10 border border-hmd-blue/20 flex items-center justify-center">
+                  <span className="w-2.5 h-2.5 rounded-full bg-hmd-blue" />
+                </div>
+                <p className="text-xs text-gray-500 text-center font-medium">Healthy<br />habits</p>
+              </div>
+
+              <div className="flex-1 flex items-center pt-4">
+                <div className="w-full h-px bg-gradient-to-r from-hmd-blue/30 via-hmd-teal/20 to-hmd-teal/30" />
+              </div>
+
+              <div className="flex flex-col items-center gap-2 flex-1">
+                <div className="w-9 h-9 rounded-full bg-hmd-teal/10 border border-hmd-teal/20 flex items-center justify-center">
+                  <span className="w-2.5 h-2.5 rounded-full bg-hmd-teal" />
+                </div>
+                <p className="text-xs text-gray-500 text-center font-medium">Digital<br />independence</p>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        {/* Value cards */}
+        <div className="px-5 pb-16">
+          <div className="max-w-sm mx-auto space-y-3">
+
+            <div className="rounded-2xl border border-teal-100 bg-teal-50/40 p-4">
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-xl bg-hmd-teal/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#00A99D" strokeWidth="2" className="w-4 h-4">
+                    <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-gray-800 mb-0.5">Safer use</p>
+                  <p className="text-xs text-gray-500 leading-relaxed">Practical guidance for online risks and trusted contacts.</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-blue-100 bg-blue-50/40 p-4">
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-xl bg-hmd-blue/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#0057B8" strokeWidth="2" className="w-4 h-4">
+                    <path d="M12 3v1m0 16v1M4.22 4.22l.707.707m12.02 12.02l.707.707M1 12h2m18 0h2M4.22 19.78l.707-.707M18.95 5.05l.707-.707M12 7a5 5 0 100 10A5 5 0 0012 7z" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-gray-800 mb-0.5">Healthy habits</p>
+                  <p className="text-xs text-gray-500 leading-relaxed">Support screen-time balance without over-control.</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-gray-100 bg-gray-50/60 p-4">
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-xl bg-gray-200/60 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2" className="w-4 h-4">
+                    <path d="M13 7l5 5m0 0l-5 5m5-5H6" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-gray-800 mb-0.5">Growing independence</p>
+                  <p className="text-xs text-gray-500 leading-relaxed">Help children build confidence step by step.</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
       </main>
     );
   }
