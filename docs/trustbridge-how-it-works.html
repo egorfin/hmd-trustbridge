@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HMD TrustBridge — How It Works</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #1a1a2e;
+    background: #fff;
+    padding: 56px 64px;
+    max-width: 820px;
+    margin: 0 auto;
+  }
+
+  /* ── Cover ── */
+  .cover {
+    border-left: 5px solid #00A99D;
+    padding: 28px 32px;
+    background: linear-gradient(135deg, #f0fafa 0%, #eef5ff 100%);
+    border-radius: 0 16px 16px 0;
+    margin-bottom: 40px;
+  }
+  .cover-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #00A99D;
+    margin-bottom: 10px;
+  }
+  .cover h1 {
+    font-size: 28px;
+    font-weight: 800;
+    color: #0A1B3D;
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+  .cover p {
+    font-size: 14px;
+    color: #4B5563;
+    max-width: 560px;
+    line-height: 1.65;
+  }
+
+  /* ── Section ── */
+  .section {
+    margin-bottom: 36px;
+  }
+  .step-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .step-num {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #0057B8;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .step-num.teal { background: #00A99D; }
+  h2 {
+    font-size: 17px;
+    font-weight: 700;
+    color: #0A1B3D;
+  }
+  h3 {
+    font-size: 13px;
+    font-weight: 700;
+    color: #374151;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  p {
+    color: #374151;
+    margin-bottom: 10px;
+    font-size: 13.5px;
+  }
+
+  /* ── Score box ── */
+  .score-box {
+    background: #F9FAFB;
+    border: 1px solid #E5E7EB;
+    border-radius: 12px;
+    padding: 18px 22px;
+    margin: 14px 0;
+    font-size: 13px;
+    line-height: 1.8;
+    color: #374151;
+  }
+  .score-box code {
+    font-family: 'SF Mono', 'Fira Mono', monospace;
+    font-size: 12.5px;
+    background: #E5E7EB;
+    padding: 1px 5px;
+    border-radius: 4px;
+    color: #0057B8;
+  }
+
+  /* ── Table ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+    font-size: 13px;
+  }
+  thead tr {
+    background: #F3F4F6;
+  }
+  th {
+    text-align: left;
+    padding: 8px 12px;
+    font-weight: 600;
+    color: #374151;
+    border-bottom: 2px solid #E5E7EB;
+  }
+  td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #F3F4F6;
+    color: #4B5563;
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+
+  /* ── Chip row ── */
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 10px 0;
+  }
+  .chip {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1.5px solid;
+  }
+  .chip-teal  { color: #00A99D; border-color: #00A99D; background: #f0fafa; }
+  .chip-blue  { color: #0057B8; border-color: #0057B8; background: #eef5ff; }
+  .chip-amber { color: #92400E; border-color: #D97706; background: #fffbeb; }
+
+  /* ── Flow diagram ── */
+  .flow {
+    background: #F9FAFB;
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 14px 0;
+    font-size: 12.5px;
+    font-family: 'SF Mono', 'Fira Mono', monospace;
+    line-height: 2;
+    color: #374151;
+    border: 1px solid #E5E7EB;
+  }
+  .flow .teal { color: #00A99D; font-weight: 700; }
+  .flow .blue { color: #0057B8; font-weight: 700; }
+  .flow .gray { color: #9CA3AF; }
+
+  /* ── Card ── */
+  .card {
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin: 10px 0;
+    border: 1px solid;
+  }
+  .card-teal { background: #f0fafa; border-color: #99E6DF; }
+  .card-blue { background: #eef5ff; border-color: #BFDBFE; }
+  .card-gray { background: #F9FAFB; border-color: #E5E7EB; }
+
+  .card h3 {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+  }
+  .card-teal h3 { color: #00A99D; }
+  .card-blue h3 { color: #0057B8; }
+  .card-gray h3 { color: #6B7280; }
+  .card p { margin: 0; font-size: 13px; color: #374151; }
+
+  /* ── Decision table ── */
+  .decision td:first-child { font-family: monospace; color: #0057B8; font-size: 12px; }
+
+  /* ── Key points ── */
+  .key-points {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .key-point {
+    background: #F9FAFB;
+    border-radius: 10px;
+    padding: 14px 16px;
+    border-left: 3px solid #00A99D;
+  }
+  .key-point strong {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #0A1B3D;
+    margin-bottom: 4px;
+  }
+  .key-point span {
+    font-size: 12px;
+    color: #6B7280;
+    line-height: 1.5;
+  }
+
+  /* ── Arch table ── */
+  .arch-table td { font-size: 12.5px; }
+  .arch-table td:first-child { font-weight: 600; color: #0A1B3D; width: 160px; }
+
+  /* ── Divider ── */
+  hr {
+    border: none;
+    border-top: 1px solid #E5E7EB;
+    margin: 32px 0;
+  }
+
+  /* ── Footer ── */
+  .footer {
+    margin-top: 48px;
+    padding-top: 16px;
+    border-top: 1px solid #E5E7EB;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer span { font-size: 11px; color: #9CA3AF; }
+  .footer .brand { font-size: 11px; font-weight: 700; color: #00A99D; letter-spacing: 0.1em; text-transform: uppercase; }
+
+  @media print {
+    body { padding: 32px 40px; }
+    .section { page-break-inside: avoid; }
+    .key-points { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── Cover ── -->
+<div class="cover">
+  <div class="cover-label">Hackathon Technical Brief · 2025</div>
+  <h1>HMD TrustBridge<br/>How It Works</h1>
+  <p>An AI-powered Digital Safety Advisor that turns a QR scan into a personalised safer-smartphone plan for parents — in under 60 seconds, with no account required.</p>
+</div>
+
+<!-- ── Overview ── -->
+<div class="section">
+  <div class="chips">
+    <span class="chip chip-teal">Fully client-side on Vercel</span>
+    <span class="chip chip-blue">Deterministic scoring · No hallucination</span>
+    <span class="chip chip-amber">Concern-first device recommendation</span>
+  </div>
+</div>
+
+<hr/>
+
+<!-- ── Step 1 ── -->
+<div class="section">
+  <div class="step-header">
+    <div class="step-num teal">1</div>
+    <h2>Landing page</h2>
+  </div>
+  <p>The parent lands on the product page after scanning a QR code (billboard, retail shelf, or print) and taps <strong>"Check my child's phone readiness"</strong>. The entire experience runs in the browser — no account, no sign-up.</p>
+</div>
+
+<!-- ── Step 2 ── -->
+<div class="section">
+  <div class="step-header">
+    <div class="step-num">2</div>
+    <h2>Adaptive questionnaire</h2>
+  </div>
+  <p>5 core questions with up to 3 dynamic follow-ups — the step list is recomputed after each answer. No page reloads, no loading spinners between steps.</p>
+
+  <table>
+    <thead>
+      <tr><th>Question</th><th>What it captures</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Child's age</td><td>Maturity baseline for scoring</td></tr>
+      <tr><td>First smartphone or upgrade?</td><td>Experience level, onboarding need</td></tr>
+      <tr><td>Main intended use</td><td>Risk surface (games, social, school, family…)</td></tr>
+      <tr><td>Biggest concern</td><td>Primary safety focus — drives device recommendation</td></tr>
+      <tr><td>Parent confidence</td><td>Onboarding support level needed</td></tr>
+    </tbody>
+  </table>
+
+  <p style="font-size:12.5px; color:#6B7280;">Follow-ups appear conditionally — e.g. a social media question only shows if the parent selected social media as a main use.</p>
+</div>
+
+<!-- ── Step 3 ── -->
+<div class="section">
+  <div class="step-header">
+    <div class="step-num">3</div>
+    <h2>Deterministic scoring</h2>
+  </div>
+  <p>On submit, a rule-based algorithm computes a <strong>readiness score (0–100)</strong>. No AI is involved in this step. The score is 100% reproducible from the same inputs.</p>
+
+  <div class="score-box">
+    Base score: <code>70</code><br/><br/>
+    + Age delta &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>−30</code> to <code>+10</code> &nbsp;&nbsp; (younger = larger penalty)<br/>
+    + First phone &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>−5</code> or <code>+5</code><br/>
+    + App exposure &nbsp;&nbsp;&nbsp; <code>−10</code> to <code>+8</code> &nbsp;&nbsp; (inferred from intended use)<br/>
+    + Main concern &nbsp;&nbsp;&nbsp; <code>−4</code> to <code>−8</code> &nbsp;&nbsp; (per concern selected)<br/>
+    + Independence &nbsp;&nbsp;&nbsp; <code>−8</code> to <code>+8</code> &nbsp;&nbsp; (derived from age)<br/>
+    + Combo penalties <code>−5</code> to <code>−10</code> &nbsp; (e.g. young child + social media)<br/><br/>
+    → Final score clamped to <code>0–100</code>
+  </div>
+
+  <table>
+    <thead><tr><th>Score range</th><th>Readiness level</th><th>Label</th></tr></thead>
+    <tbody>
+      <tr><td>≥ 70</td><td>ready_with_boundaries</td><td>Ready with clear boundaries</td></tr>
+      <tr><td>40 – 69</td><td>moderate</td><td>Ready for guided independence</td></tr>
+      <tr><td>&lt; 40</td><td>not_ready</td><td>Safer start recommended</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ── Step 4 ── -->
+<div class="section">
+  <div class="step-header">
+    <div class="step-num teal">4</div>
+    <h2>HMD device recommendation</h2>
+  </div>
+  <p>A separate concern-first logic selects the HMD product path <strong>independently of the score</strong>. The parent's stated worry drives the recommendation — not just a number.</p>
+
+  <table class="decision">
+    <thead><tr><th>Concern</th><th>Recommended path</th></tr></thead>
+    <tbody>
+      <tr><td>harmful_content</td><td>HMD Fuse + HarmBlock+ &nbsp;(age &lt; 15 or first phone)</td></tr>
+      <tr><td>strangers</td><td>HMD Fuse (age &lt; 13) · HMD Fusion X1 (age ≥ 13)</td></tr>
+      <tr><td>screen_time</td><td>HMD Fusion X1</td></tr>
+      <tr><td>cyberbullying</td><td>HMD Fusion X1</td></tr>
+      <tr><td>social_pressure</td><td>HMD Fusion X1</td></tr>
+      <tr><td>privacy / not sure</td><td>Derived from readiness level</td></tr>
+    </tbody>
+  </table>
+
+  <p style="font-size:12.5px;color:#6B7280;">Two children with the same readiness score can receive different device paths depending on what the parent is most concerned about.</p>
+</div>
+
+<!-- ── Step 5 ── -->
+<div class="section">
+  <div class="step-header">
+    <div class="step-num">5</div>
+    <h2>Report generation</h2>
+  </div>
+  <p>Eight personalised narrative fields are generated, keyed on <strong>readiness_level × concern</strong>:</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0;">
+    <div class="card card-gray"><p>Headline</p></div>
+    <div class="card card-gray"><p>Summary</p></div>
+    <div class="card card-gray"><p>Why this score</p></div>
+    <div class="card card-gray"><p>Risk explanation</p></div>
+    <div class="card card-gray"><p>Safety strategy (3 steps)</p></div>
+    <div class="card card-gray"><p>Parent–child conversation starter</p></div>
+    <div class="card card-gray"><p>Why this HMD path fits</p></div>
+    <div class="card card-gray"><p>Confidence shift message</p></div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;">
+    <div class="card card-teal">
+      <h3>Vercel demo</h3>
+      <p>Template-driven text — pre-written per readiness level and concern. Zero external dependencies.</p>
+    </div>
+    <div class="card card-blue">
+      <h3>Full backend version</h3>
+      <p>OpenAI GPT-4.1-mini writes these 8 fields using the full scoring context as a structured JSON prompt. Score and risk profile are <em>never</em> touched by the LLM.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ── Step 6 ── -->
+<div class="section">
+  <div class="step-header">
+    <div class="step-num teal">6</div>
+    <h2>Results screen</h2>
+  </div>
+  <p>The parent sees a personalised plan assembled from all computed data:</p>
+
+  <table>
+    <thead><tr><th>Element</th><th>Data source</th></tr></thead>
+    <tbody>
+      <tr><td>Child profile card</td><td>readiness_level + concern + path</td></tr>
+      <tr><td>Research evidence</td><td>Matched citation from evidence library (age + concern aware)</td></tr>
+      <tr><td>3 quick steps</td><td>Static action table keyed on concern</td></tr>
+      <tr><td>HMD device card</td><td>Product name + hmd.com link from pathKey</td></tr>
+      <tr><td>Accordions (6 sections)</td><td>Score drivers · Comparison · Features · Conversation · Research · Phone agreement</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<hr/>
+
+<!-- ── Architecture ── -->
+<div class="section">
+  <h2 style="margin-bottom:16px;">Architecture overview</h2>
+
+  <div class="flow">
+    <span class="teal">QR scan</span> → Landing page → Questionnaire (5–8 steps)<br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓<br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="blue">clientScoring.ts</span> (runs in browser)<br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ Readiness score &nbsp;&nbsp;<span class="gray">(rule-based math)</span><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ Risk profile &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="gray">(concern × age × use)</span><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ Report narrative &nbsp;<span class="gray">(templates / GPT-4.1-mini)</span><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓<br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="teal">HmdPathSection.tsx</span> &nbsp;<span class="gray">(concern-first device logic)</span><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓<br/>
+    &nbsp;&nbsp;<span class="blue">Results screen</span> → Score · Steps · HMD card · Accordions
+  </div>
+
+  <table class="arch-table" style="margin-top:16px;">
+    <thead><tr><th></th><th>Vercel demo</th><th>Full backend</th></tr></thead>
+    <tbody>
+      <tr><td>Scoring</td><td>TypeScript (browser)</td><td>Python FastAPI</td></tr>
+      <tr><td>Report narrative</td><td>Pre-written templates</td><td>OpenAI GPT-4.1-mini</td></tr>
+      <tr><td>Session logging</td><td>—</td><td>Supabase</td></tr>
+      <tr><td>External calls</td><td>None</td><td>OpenAI + Supabase</td></tr>
+      <tr><td>Works offline</td><td>✓ after page load</td><td>✗</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<hr/>
+
+<!-- ── Key decisions ── -->
+<div class="section">
+  <h2 style="margin-bottom:16px;">Key design decisions</h2>
+  <div class="key-points">
+    <div class="key-point">
+      <strong>Score is never set by AI</strong>
+      <span>Prevents hallucination of safety-critical numbers. The LLM only writes narrative text, never touches the score.</span>
+    </div>
+    <div class="key-point">
+      <strong>Concern beats score for device path</strong>
+      <span>The parent's stated worry drives the HMD recommendation — not just a readiness number. More relevant, less generic.</span>
+    </div>
+    <div class="key-point">
+      <strong>No personal data collected</strong>
+      <span>No name, no email, no account. The assessment runs entirely in the browser session.</span>
+    </div>
+    <div class="key-point">
+      <strong>Works from any QR scan</strong>
+      <span>Vercel deployment has zero runtime dependencies. Loads fast on mobile, works on any network.</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── Footer ── -->
+<div class="footer">
+  <span class="brand">HMD TrustBridge</span>
+  <span>hmd-trustbridge.vercel.app</span>
+  <span>Hackathon Demo · 2025</span>
+</div>
+
+</body>
+</html>

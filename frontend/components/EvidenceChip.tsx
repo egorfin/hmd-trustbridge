@@ -11,10 +11,10 @@ export default function EvidenceChip({ item, title }: EvidenceChipProps) {
   return (
     <div className="space-y-1">
       {title && (
-        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{title}</p>
+        <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-0.5">{title}</p>
       )}
-      <div className="flex gap-2.5 p-3 bg-gray-50 rounded-xl border border-gray-100">
-        <div className="w-0.5 self-stretch rounded-full bg-hmd-teal/40 flex-shrink-0" />
+      <div className="flex gap-2.5 p-3 bg-teal-50/30 rounded-xl border border-teal-100/60">
+        <div className="w-0.5 self-stretch rounded-full bg-hmd-teal/50 flex-shrink-0" />
         <div className="min-w-0">
           <p className="text-xs text-gray-600 leading-relaxed">{item.evidenceText}</p>
           <a

@@ -621,14 +621,14 @@ export default function Home() {
               {HERO_SUBTITLE[pathKey] ?? HERO_SUBTITLE.guided}
             </p>
           </div>
-          <div className="flex flex-wrap gap-2">
-            <span className="inline-block bg-hmd-teal text-white text-xs font-bold px-3 py-1.5 rounded-full">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="inline-block bg-hmd-teal text-white text-sm font-bold px-4 py-2 rounded-full">
               {familyProfile}
             </span>
-            <span className="inline-block bg-amber-50 border border-amber-200 text-amber-800 text-xs font-bold px-3 py-1.5 rounded-full">
+            <span className="inline-block bg-amber-50 border border-amber-200 text-amber-700 text-xs font-medium px-3 py-1 rounded-full">
               {challengeLabel}
             </span>
-            <span className="inline-block bg-hmd-blue/10 border border-hmd-blue/20 text-hmd-blue text-xs font-bold px-3 py-1.5 rounded-full">
+            <span className="inline-block bg-blue-50 border border-blue-100 text-hmd-blue text-xs font-medium px-3 py-1 rounded-full">
               {PATH_APPROACH_LABEL[pathKey] ?? pathKey}
             </span>
           </div>
@@ -644,33 +644,47 @@ export default function Home() {
           <p className="text-sm font-bold text-gray-900">Start with these 3 steps</p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {(QUICK_STEPS[concernKey] ?? QUICK_STEPS.not_sure).map((step, i) => (
-              <div key={i} className="flex gap-3 p-4 bg-white rounded-2xl border border-gray-100 shadow-sm">
-                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-hmd-teal text-white text-xs font-bold flex items-center justify-center">
+              <div key={i} className="flex gap-3 p-4 bg-gray-50 rounded-2xl">
+                <span className="flex-shrink-0 w-7 h-7 rounded-full bg-hmd-teal text-white text-xs font-bold flex items-center justify-center mt-0.5">
                   {i + 1}
                 </span>
-                <p className="text-sm text-gray-700 leading-relaxed">{step}</p>
+                <p className="text-sm text-gray-700 leading-relaxed pt-0.5">{step}</p>
               </div>
             ))}
           </div>
         </div>
 
         {/* ── HMD path teaser ───────────────────────────────────────────────── */}
-        <div className="flex items-center justify-between gap-4 px-5 py-4 bg-white rounded-2xl border border-gray-100 shadow-sm">
-          <div className="min-w-0">
-            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Suggested device path</p>
-            <p className="text-sm font-semibold text-hmd-blue">{productName}</p>
+        <div className="rounded-2xl border border-hmd-teal/20 bg-gradient-to-r from-teal-50/40 to-white shadow-sm overflow-hidden">
+          <div className="flex items-center justify-between gap-4 px-5 py-4">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-9 h-9 rounded-xl bg-hmd-teal/10 flex items-center justify-center flex-shrink-0">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#00A99D" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+                  <path d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                </svg>
+              </div>
+              <div className="min-w-0">
+                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Suggested device path</p>
+                <p className="text-sm font-bold text-hmd-blue">{productName}</p>
+              </div>
+            </div>
+            <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
+              <span className="text-[10px] font-bold text-hmd-teal bg-teal-50 border border-teal-100 px-2.5 py-0.5 rounded-full uppercase tracking-wide">
+                Recommended
+              </span>
+              <a
+                href={ctaUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs font-semibold text-hmd-teal hover:underline inline-flex items-center gap-1"
+              >
+                hmd.com
+                <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-3 h-3">
+                  <path d="M1 11L11 1M11 1H4.5M11 1V7.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </a>
+            </div>
           </div>
-          <a
-            href={ctaUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex-shrink-0 text-xs font-semibold text-hmd-teal hover:underline inline-flex items-center gap-1"
-          >
-            hmd.com
-            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-3 h-3">
-              <path d="M1 11L11 1M11 1H4.5M11 1V7.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </a>
         </div>
 
         {/* ── CTA ───────────────────────────────────────────────────────────── */}
